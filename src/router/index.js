@@ -40,7 +40,11 @@ const mainRoutes = {
     { path: '/sign', component: _import('dataManage/sign'), name: 'sign', meta: { title: '报名成单数据', isTab: true } },
     { path: '/refund', component: _import('dataManage/refund'), name: 'refund', meta: { title: '退费监控', isTab: true } },
     { path: '/getData', component: _import('dataManage/getData'), name: 'getData', meta: { title: '获取数据', isTab: true } },
-    { path: '/baiduChannel', component: _import('dataManage/baiduChannel'), name: 'baiduChannel', meta: { title: '百度渠道获取数据', isTab: true } }
+    { path: '/baiduChannel', component: _import('dataManage/baiduChannel'), name: 'baiduChannel', meta: { title: '百度渠道获取数据', isTab: true } },
+    { path: '/studentPlan', component: _import('dataManage/studentPlan'), name: 'studentPlan', meta: { title: '招生目标', isTab: true } },
+    { path: '/courseData', component: _import('dataManage/courseData'), name: 'courseData', meta: { title: '文化课报名数据', isTab: true } },
+    { path: '/organ', component: _import('organManage/organ'), name: 'organ', meta: { title: '机构管理', isTab: true } },
+    { path: '/member', component: _import('organManage/member'), name: 'member', meta: { title: '成员管理', isTab: true } }
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')

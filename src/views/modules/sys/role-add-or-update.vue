@@ -20,6 +20,12 @@
           show-checkbox>
         </el-tree>
       </el-form-item>
+      <el-form-item label="状态" size="mini" prop="status">
+        <el-radio-group v-model="dataForm.status">
+          <el-radio :label="0">禁用</el-radio>
+          <el-radio :label="1">正常</el-radio>
+        </el-radio-group>
+      </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
@@ -42,7 +48,8 @@
         dataForm: {
           id: 0,
           roleName: '',
-          remark: ''
+          remark: '',
+          status: 1
         },
         dataRule: {
           roleName: [

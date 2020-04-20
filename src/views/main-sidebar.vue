@@ -29,6 +29,10 @@
             <icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>
             <span>数据管理</span>
           </template>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'studentPlan' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">招生目标</span>
+          </el-menu-item>
           <el-menu-item index="demo-echarts" @click="$router.push({ name: 'sign' })">
             <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
             <span slot="title">报名成单数据</span>
@@ -44,6 +48,24 @@
           <el-menu-item index="demo-echarts" @click="$router.push({ name: 'baiduChannel' })">
             <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
             <span slot="title">百度渠道获取数据</span>
+          </el-menu-item>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'courseData' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">文化课报名数据</span>
+          </el-menu-item>
+        </el-submenu>
+        <el-submenu index="organ">
+          <template slot="title">
+            <icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>
+            <span>机构管理</span>
+          </template>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'organ' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">机构管理</span>
+          </el-menu-item>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'member' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">成员管理</span>
           </el-menu-item>
         </el-submenu>
         <sub-menu

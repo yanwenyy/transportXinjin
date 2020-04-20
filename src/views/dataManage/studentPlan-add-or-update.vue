@@ -12,19 +12,10 @@
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="全款人数" prop="userName">
+      <el-form-item label="招生计划人数" prop="userName">
         <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
       </el-form-item>
-      <el-form-item label="定金人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金人数"></el-input>
-      </el-form-item>
-      <el-form-item label="定金转全款人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
-      </el-form-item>
-      <el-form-item  :label="preYear+'年同日定金转+全款总计人数'" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
-      </el-form-item>
-      <h2 class="addTitle">渠道人数</h2>
+      <h2 class="addTitle">渠道招生人数</h2>
       <el-form-item label="线上" prop="userName">
         <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
       </el-form-item>
@@ -85,7 +76,6 @@
       return {
         visible: false,
         roleList: [],
-        preYear:19,
         dataForm: {
           id: 0,
           userName: '',
@@ -190,10 +180,6 @@
   }
 </script>
 <style scoped>
-  .sign-add-span{
-    display: inline-block;
-    width: 120px;
-  }
   >>> .el-form-item__label{
     width: 120px!important;
   }

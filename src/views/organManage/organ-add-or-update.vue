@@ -4,41 +4,8 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="数据时间" prop="userName">
-        <el-date-picker
-          v-model="dataForm.regStart"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="全款人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
-      </el-form-item>
-      <el-form-item label="定金人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金人数"></el-input>
-      </el-form-item>
-      <el-form-item label="定金转全款人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
-      </el-form-item>
-      <el-form-item  :label="preYear+'年同日定金转+全款总计人数'" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
-      </el-form-item>
-      <h2 class="addTitle">渠道人数</h2>
-      <el-form-item label="线上" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
-      </el-form-item>
-      <el-form-item label="地推" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="地推"></el-input>
-      </el-form-item>
-      <el-form-item label="教学部" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="教学部"></el-input>
-      </el-form-item>
-      <el-form-item label="画室" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="画室"></el-input>
-      </el-form-item>
-      <el-form-item label="其他" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
+      <el-form-item label="学校名称" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="学校名称"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -85,7 +52,6 @@
       return {
         visible: false,
         roleList: [],
-        preYear:19,
         dataForm: {
           id: 0,
           userName: '',
@@ -189,15 +155,3 @@
     }
   }
 </script>
-<style scoped>
-  .sign-add-span{
-    display: inline-block;
-    width: 120px;
-  }
-  >>> .el-form-item__label{
-    width: 120px!important;
-  }
-  >>> .el-input{
-    width: 90%;
-  }
-</style>

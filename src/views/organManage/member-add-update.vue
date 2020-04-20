@@ -3,42 +3,32 @@
     :title="!dataForm.id ? '新增' : '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
-    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="数据时间" prop="userName">
-        <el-date-picker
-          v-model="dataForm.regStart"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
+    <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
+             label-width="80px">
+      <el-form-item label="请选择机构" prop="userName">
+        <el-select v-model="value" placeholder="请选择机构">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
-      <el-form-item label="全款人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
+      <el-form-item label="用户名" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
       </el-form-item>
-      <el-form-item label="定金人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金人数"></el-input>
+      <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
+        <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
       </el-form-item>
-      <el-form-item label="定金转全款人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
+      <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.id }">
+        <el-input v-model="dataForm.comfirmPassword" type="password" placeholder="确认密码"></el-input>
       </el-form-item>
-      <el-form-item  :label="preYear+'年同日定金转+全款总计人数'" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
-      </el-form-item>
-      <h2 class="addTitle">渠道人数</h2>
-      <el-form-item label="线上" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
-      </el-form-item>
-      <el-form-item label="地推" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="地推"></el-input>
-      </el-form-item>
-      <el-form-item label="教学部" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="教学部"></el-input>
-      </el-form-item>
-      <el-form-item label="画室" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="画室"></el-input>
-      </el-form-item>
-      <el-form-item label="其他" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
+      <el-form-item label="指定角色" size="mini" prop="roleIdList">
+        <el-checkbox-group v-model="dataForm.roleIdList">
+          <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}
+          </el-checkbox>
+        </el-checkbox-group>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -49,9 +39,10 @@
 </template>
 
 <script>
-  import { isEmail, isMobile } from '@/utils/validate'
+  import {isEmail, isMobile} from '@/utils/validate'
+
   export default {
-    data () {
+    data() {
       var validatePassword = (rule, value, callback) => {
         if (!this.dataForm.id && !/\S/.test(value)) {
           callback(new Error('密码不能为空'))
@@ -85,7 +76,6 @@
       return {
         visible: false,
         roleList: [],
-        preYear:19,
         dataForm: {
           id: 0,
           userName: '',
@@ -95,31 +85,48 @@
           email: '',
           mobile: '',
           roleIdList: [],
-          status: 1
+          status: 1,
+          options: [{
+            value: '选项1',
+            label: '黄金糕'
+          }, {
+            value: '选项2',
+            label: '双皮奶'
+          }, {
+            value: '选项3',
+            label: '蚵仔煎'
+          }, {
+            value: '选项4',
+            label: '龙须面'
+          }, {
+            value: '选项5',
+            label: '北京烤鸭'
+          }],
+          value: '',
         },
         dataRule: {
           userName: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' }
+            {required: true, message: '用户名不能为空', trigger: 'blur'}
           ],
           password: [
-            { validator: validatePassword, trigger: 'blur' }
+            {validator: validatePassword, trigger: 'blur'}
           ],
           comfirmPassword: [
-            { validator: validateComfirmPassword, trigger: 'blur' }
+            {validator: validateComfirmPassword, trigger: 'blur'}
           ],
           email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
-            { validator: validateEmail, trigger: 'blur' }
+            {required: true, message: '邮箱不能为空', trigger: 'blur'},
+            {validator: validateEmail, trigger: 'blur'}
           ],
           mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' },
-            { validator: validateMobile, trigger: 'blur' }
+            {required: true, message: '手机号不能为空', trigger: 'blur'},
+            {validator: validateMobile, trigger: 'blur'}
           ]
         }
       }
     },
     methods: {
-      init (id) {
+      init(id) {
         this.dataForm.id = id || 0
         this.$http({
           url: this.$http.adornUrl('/sys/role/select'),
@@ -152,7 +159,7 @@
         })
       },
       // 表单提交
-      dataFormSubmit () {
+      dataFormSubmit() {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -190,10 +197,6 @@
   }
 </script>
 <style scoped>
-  .sign-add-span{
-    display: inline-block;
-    width: 120px;
-  }
   >>> .el-form-item__label{
     width: 120px!important;
   }
