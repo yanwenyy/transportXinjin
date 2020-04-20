@@ -4,31 +4,40 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="用户名" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
+      <el-form-item label="数据时间" prop="userName">
+        <el-date-picker
+          v-model="dataForm.regStart"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择时间">
+        </el-date-picker>
       </el-form-item>
-      <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
-        <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
+      <el-form-item label="全款人数" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="全款人数"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.id }">
-        <el-input v-model="dataForm.comfirmPassword" type="password" placeholder="确认密码"></el-input>
+      <el-form-item label="定金人数" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="定金人数"></el-input>
       </el-form-item>
-      <el-form-item label="邮箱" prop="email">
-        <el-input v-model="dataForm.email" placeholder="邮箱"></el-input>
+      <el-form-item label="定金转全款人数" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
       </el-form-item>
-      <el-form-item label="手机号" prop="mobile">
-        <el-input v-model="dataForm.mobile" placeholder="手机号"></el-input>
+      <el-form-item label="渠道人数" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="渠道人数"></el-input>
       </el-form-item>
-      <el-form-item label="角色" size="mini" prop="roleIdList">
-        <el-checkbox-group v-model="dataForm.roleIdList">
-          <el-checkbox v-for="role in roleList" :key="role.roleId" :label="role.roleId">{{ role.roleName }}</el-checkbox>
-        </el-checkbox-group>
+      <el-form-item label="线上" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="线上"></el-input>
       </el-form-item>
-      <el-form-item label="状态" size="mini" prop="status">
-        <el-radio-group v-model="dataForm.status">
-          <el-radio :label="0">禁用</el-radio>
-          <el-radio :label="1">正常</el-radio>
-        </el-radio-group>
+      <el-form-item label="地推" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="地推"></el-input>
+      </el-form-item>
+      <el-form-item label="教学部" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="教学部"></el-input>
+      </el-form-item>
+      <el-form-item label="画室" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="画室"></el-input>
+      </el-form-item>
+      <el-form-item label="其他" prop="userName">
+        <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

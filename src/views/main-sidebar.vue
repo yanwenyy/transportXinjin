@@ -25,15 +25,19 @@
           </el-menu-item>
         </el-submenu>
         <el-submenu index="sign">
-                  <template slot="title">
-                    <icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>
-                    <span>数据管理</span>
-                  </template>
-                  <el-menu-item index="demo-echarts" @click="$router.push({ name: 'sign' })">
-                    <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-                    <span slot="title">报名成单数据</span>
-                  </el-menu-item>
-                </el-submenu>
+          <template slot="title">
+            <icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>
+            <span>数据管理</span>
+          </template>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'sign' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">报名成单数据</span>
+          </el-menu-item>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'refund' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">退费监控</span>
+          </el-menu-item>
+        </el-submenu>
         <sub-menu
           v-for="menu in menuList"
           :key="menu.menuId"
@@ -47,9 +51,10 @@
 
 <script>
   import SubMenu from './main-sidebar-sub-menu'
-  import { isURL } from '@/utils/validate'
+  import {isURL} from '@/utils/validate'
+
   export default {
-    data () {
+    data() {
       return {
         dynamicMenuRoutes: []
       }
@@ -59,39 +64,59 @@
     },
     computed: {
       sidebarLayoutSkin: {
-        get () { return this.$store.state.common.sidebarLayoutSkin }
+        get() {
+          return this.$store.state.common.sidebarLayoutSkin
+        }
       },
       sidebarFold: {
-        get () { return this.$store.state.common.sidebarFold }
+        get() {
+          return this.$store.state.common.sidebarFold
+        }
       },
       menuList: {
-        get () { return this.$store.state.common.menuList },
-        set (val) { this.$store.commit('common/updateMenuList', val) }
+        get() {
+          return this.$store.state.common.menuList
+        },
+        set(val) {
+          this.$store.commit('common/updateMenuList', val)
+        }
       },
       menuActiveName: {
-        get () { return this.$store.state.common.menuActiveName },
-        set (val) { this.$store.commit('common/updateMenuActiveName', val) }
+        get() {
+          return this.$store.state.common.menuActiveName
+        },
+        set(val) {
+          this.$store.commit('common/updateMenuActiveName', val)
+        }
       },
       mainTabs: {
-        get () { return this.$store.state.common.mainTabs },
-        set (val) { this.$store.commit('common/updateMainTabs', val) }
+        get() {
+          return this.$store.state.common.mainTabs
+        },
+        set(val) {
+          this.$store.commit('common/updateMainTabs', val)
+        }
       },
       mainTabsActiveName: {
-        get () { return this.$store.state.common.mainTabsActiveName },
-        set (val) { this.$store.commit('common/updateMainTabsActiveName', val) }
+        get() {
+          return this.$store.state.common.mainTabsActiveName
+        },
+        set(val) {
+          this.$store.commit('common/updateMainTabsActiveName', val)
+        }
       }
     },
     watch: {
       $route: 'routeHandle'
     },
-    created () {
+    created() {
       this.menuList = JSON.parse(sessionStorage.getItem('menuList') || '[]')
       this.dynamicMenuRoutes = JSON.parse(sessionStorage.getItem('dynamicMenuRoutes') || '[]')
       this.routeHandle(this.$route)
     },
     methods: {
       // 路由操作
-      routeHandle (route) {
+      routeHandle(route) {
         if (route.meta.isTab) {
           // tab选中, 不存在先添加
           var tab = this.mainTabs.filter(item => item.name === route.name)[0]
