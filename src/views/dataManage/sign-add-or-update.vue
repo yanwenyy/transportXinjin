@@ -13,28 +13,28 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="全款人数" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="全款人数"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
       </el-form-item>
       <el-form-item label="定金人数" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="定金人数"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="定金人数"></el-input>
       </el-form-item>
       <el-form-item label="定金转全款人数" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="定金转全款人数"></el-input>
       </el-form-item>
       <el-form-item label="渠道人数" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="渠道人数"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="渠道人数"></el-input>
       </el-form-item>
       <el-form-item label="线上" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="线上"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
       </el-form-item>
       <el-form-item label="地推" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="地推"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="地推"></el-input>
       </el-form-item>
       <el-form-item label="教学部" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="教学部"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="教学部"></el-input>
       </el-form-item>
       <el-form-item label="画室" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="画室"></el-input>
+        <el-input type="number" v-model="dataForm.userName" placeholder="画室"></el-input>
       </el-form-item>
       <el-form-item label="其他" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
