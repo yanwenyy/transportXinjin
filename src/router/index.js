@@ -38,7 +38,9 @@ const mainRoutes = {
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
     { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } },
     { path: '/sign', component: _import('dataManage/sign'), name: 'sign', meta: { title: '报名成单数据', isTab: true } },
-    { path: '/refund', component: _import('dataManage/refund'), name: 'refund', meta: { title: '退费监控', isTab: true } }
+    { path: '/refund', component: _import('dataManage/refund'), name: 'refund', meta: { title: '退费监控', isTab: true } },
+    { path: '/getData', component: _import('dataManage/getData'), name: 'getData', meta: { title: '获取数据', isTab: true } },
+    { path: '/baiduChannel', component: _import('dataManage/baiduChannel'), name: 'baiduChannel', meta: { title: '百度渠道获取数据', isTab: true } }
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')

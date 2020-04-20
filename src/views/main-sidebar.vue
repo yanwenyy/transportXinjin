@@ -26,7 +26,7 @@
         </el-submenu>
         <el-submenu index="sign">
           <template slot="title">
-            <icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>
+            <icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>
             <span>数据管理</span>
           </template>
           <el-menu-item index="demo-echarts" @click="$router.push({ name: 'sign' })">
@@ -36,6 +36,14 @@
           <el-menu-item index="demo-echarts" @click="$router.push({ name: 'refund' })">
             <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
             <span slot="title">退费监控</span>
+          </el-menu-item>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'getData' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">获取数据</span>
+          </el-menu-item>
+          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'baiduChannel' })">
+            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
+            <span slot="title">百度渠道获取数据</span>
           </el-menu-item>
         </el-submenu>
         <sub-menu
