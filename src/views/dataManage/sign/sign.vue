@@ -4,6 +4,29 @@
       <el-form-item>
         <el-input v-model="dataForm.userName" placeholder="用户名" clearable></el-input>
       </el-form-item>
+      <el-select v-model="value" placeholder="请选择机构">
+        <el-option
+          v-for="item in options"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value">
+        </el-option>
+      </el-select>
+      <el-form-item label="选择时间:">
+        <el-date-picker
+          v-model="dataForm.regStart"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期">
+        </el-date-picker>
+        <span>--</span>
+        <el-date-picker
+          v-model="dataForm.regEnd"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
@@ -31,9 +54,8 @@
       </el-table-column>
       <el-table-column
         prop="username"
-        header-align="center"
         align="center"
-        label="用户名">
+        label="机构名称">
       </el-table-column>
       <el-table-column
         prop="email"
@@ -42,20 +64,53 @@
         label="邮箱">
       </el-table-column>
       <el-table-column
-        prop="mobile"
+        prop="username"
         header-align="center"
         align="center"
-        label="手机号">
+        label="定金人数(人)">
       </el-table-column>
       <el-table-column
-        prop="status"
+        prop="username"
         header-align="center"
         align="center"
-        label="状态">
-        <template slot-scope="scope">
-          <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
-          <el-tag v-else size="small">正常</el-tag>
-        </template>
+        label="全款人数(人)">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        width="180"
+        label="定金转全款人数(人)">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        label="线上">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        label="地推">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        label="教学部">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        label="画室">
+      </el-table-column>
+      <el-table-column
+        prop="username"
+        header-align="center"
+        align="center"
+        label="其他">
       </el-table-column>
       <el-table-column
         prop="createTime"
@@ -104,7 +159,25 @@
         totalPage: 0,
         dataListLoading: false,
         dataListSelections: [],
-        addOrUpdateVisible: false
+        addOrUpdateVisible: false,
+        options: [{
+          value: '选项1',
+          label: '黄金糕'
+        }, {
+          value: '选项2',
+          label: '双皮奶'
+        }, {
+          value: '选项3',
+          label: '蚵仔煎'
+        }, {
+          value: '选项4',
+          label: '龙须面'
+        }, {
+          value: '选项5',
+          label: '北京烤鸭'
+        }],
+        value: '',
+        value1: '',
       }
     },
     components: {
@@ -116,6 +189,7 @@
     methods: {
       // 获取数据列表
       getDataList () {
+        console.log(this.value1)
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/sys/user/list'),
