@@ -41,7 +41,7 @@
         <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
       </el-form-item>
     </el-form>
-    <span slot="footer" class="dialog-footer">
+    <span v-if="author==''" slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
     </span>
@@ -86,6 +86,7 @@
         visible: false,
         roleList: [],
         preYear:19,
+        author:'',//查看
         dataForm: {
           id: 0,
           userName: '',
@@ -119,8 +120,9 @@
       }
     },
     methods: {
-      init (id) {
-        this.dataForm.id = id || 0
+      init (id,author) {
+        this.dataForm.id = id || 0;
+        this.author=author||'';
         this.$http({
           url: this.$http.adornUrl('/sys/role/select'),
           method: 'get',

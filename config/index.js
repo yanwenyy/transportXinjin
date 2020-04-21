@@ -14,7 +14,7 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        target: 'http://test.jieshuibao.com/365gwb_back-1.1.0',
+        target: 'http://123.57.42.98:8080/px_edu',
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'
