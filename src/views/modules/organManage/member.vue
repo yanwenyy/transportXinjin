@@ -50,7 +50,7 @@
         label="所在机构">
       </el-table-column>
       <el-table-column
-        prop="mobile"
+        prop="roleName"
         header-align="center"
         align="center"
         label="角色">
@@ -119,7 +119,14 @@
       AddOrUpdate
     },
     activated () {
-      this.getDataList()
+      this.getDataList();
+      this.$http({
+        url: this.$http.adornUrl('/biz/pdagency/down/list'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({data}) => {
+        this.options = data && data.code === 0 ? data.list : []
+      });
     },
     methods: {
       // 获取数据列表

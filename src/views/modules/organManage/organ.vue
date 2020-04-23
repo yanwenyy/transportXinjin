@@ -2,11 +2,11 @@
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item>
-        <el-input v-model="dataForm.userName" placeholder="学校名称" clearable></el-input>
+        <el-input v-model="dataForm.name" placeholder="学校名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('biz:pdagency:add')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
@@ -23,14 +23,14 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="id"
         header-align="center"
         align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="username"
+        prop="agencyName"
         header-align="center"
         align="center"
         label="学校名称">
@@ -74,7 +74,7 @@
     data () {
       return {
         dataForm: {
-          userName: ''
+          name: ''
         },
         dataList: [],
         pageIndex: 1,
@@ -96,12 +96,12 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/user/list'),
+          url: this.$http.adornUrl('/biz/pdagency/list'),
           method: 'get',
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'username': this.dataForm.userName
+            'name': this.dataForm.name
           })
         }).then(({data}) => {
           if (data && data.code === 0) {
@@ -147,7 +147,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/sys/user/delete'),
+            url: this.$http.adornUrl('/biz/pdagency/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {

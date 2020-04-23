@@ -4,8 +4,8 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="学校名称" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="学校名称"></el-input>
+      <el-form-item label="学校名称" prop="agencyName">
+        <el-input v-model="dataForm.agencyName" placeholder="学校名称"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -54,32 +54,12 @@
         roleList: [],
         dataForm: {
           id: 0,
-          userName: '',
-          password: '',
-          comfirmPassword: '',
-          salt: '',
-          email: '',
-          mobile: '',
-          roleIdList: [],
+          agencyName: '',
           status: 1
         },
         dataRule: {
-          userName: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' }
-          ],
-          password: [
-            { validator: validatePassword, trigger: 'blur' }
-          ],
-          comfirmPassword: [
-            { validator: validateComfirmPassword, trigger: 'blur' }
-          ],
-          email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
-            { validator: validateEmail, trigger: 'blur' }
-          ],
-          mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' },
-            { validator: validateMobile, trigger: 'blur' }
+          agencyName: [
+            { required: true, message: '机构名不能为空', trigger: 'blur' }
           ]
         }
       }
@@ -122,17 +102,11 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/pdagency/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'userId': this.dataForm.id || undefined,
-                'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'salt': this.dataForm.salt,
-                'email': this.dataForm.email,
-                'mobile': this.dataForm.mobile,
-                'status': this.dataForm.status,
-                'roleIdList': this.dataForm.roleIdList
+                'id': this.dataForm.id || undefined,
+                'agencyName': this.dataForm.agencyName,
               })
             }).then(({data}) => {
               if (data && data.code === 0) {
