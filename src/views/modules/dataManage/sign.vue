@@ -104,7 +104,7 @@
         label="其他">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="insertTime"
         header-align="center"
         align="center"
         width="180"

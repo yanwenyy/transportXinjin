@@ -52,36 +52,6 @@
   import { isEmail, isMobile } from '@/utils/validate'
   export default {
     data () {
-      var validatePassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('密码不能为空'))
-        } else {
-          callback()
-        }
-      }
-      var validateComfirmPassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('确认密码不能为空'))
-        } else if (this.dataForm.password !== value) {
-          callback(new Error('确认密码与密码输入不一致'))
-        } else {
-          callback()
-        }
-      }
-      var validateEmail = (rule, value, callback) => {
-        if (!isEmail(value)) {
-          callback(new Error('邮箱格式错误'))
-        } else {
-          callback()
-        }
-      }
-      var validateMobile = (rule, value, callback) => {
-        if (!isMobile(value)) {
-          callback(new Error('手机号格式错误'))
-        } else {
-          callback()
-        }
-      }
       return {
         visible: false,
         roleList: [],
@@ -147,7 +117,7 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dateTime = data.data.dateTime;
+                this.dataForm.dateTime = data.data.dataTime;
                 this.dataForm.fullMoneyNum = data.data.fullMoneyNum;
                 this.dataForm.frontMoneyNum = data.data.frontMoneyNum;
                 this.dataForm.fronFullNum = data.data.fronFullNum;
@@ -168,7 +138,7 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/pdsignup/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'agencyId': this.dataForm.id || undefined,

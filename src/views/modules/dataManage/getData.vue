@@ -11,14 +11,14 @@
       </el-select>
       <el-form-item label="选择时间:">
         <el-date-picker
-          v-model="dataForm.regStart"
+          v-model="dataForm.startTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
-          v-model="dataForm.regEnd"
+          v-model="dataForm.endTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择日期">
@@ -67,7 +67,7 @@
         label="有效数据(个)">
       </el-table-column>
       <el-table-column
-        prop="username"
+        prop="effectiveData"
         header-align="center"
         align="center"
         label="有效率(%)">

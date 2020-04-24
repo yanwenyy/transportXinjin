@@ -219,7 +219,7 @@
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'years': this.dataForm.years,
+            'years': this.dataForm.years.split("-")[0],
             'agencyId':this.dataForm.agencyId
           })
         }).then(({data}) => {

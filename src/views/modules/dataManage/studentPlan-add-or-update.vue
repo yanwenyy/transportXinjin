@@ -90,7 +90,7 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.years = data.data.years;
+                this.dataForm.years = data.data.enrollmentYear;
                 this.dataForm.studentNum = data.data.studentNum;
                 this.dataForm.onlineNum = data.data.onlineNum;
                 this.dataForm.pusnNum = data.data.pusnNum;
@@ -111,7 +111,7 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'years': this.dataForm.years,
+                'years': this.dataForm.years.split("-")[0],
                 'studentNum': Number(this.dataForm.studentNum),
                 'onlineNum': Number(this.dataForm.onlineNum),
                 'pusnNum': Number(this.dataForm.pusnNum),

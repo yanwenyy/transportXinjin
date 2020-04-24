@@ -41,12 +41,7 @@
         align="center"
         label="备注">
       </el-table-column>
-      <el-table-column
-        prop="remark"
-        header-align="center"
-        align="center"
-        label="状态">
-      </el-table-column>
+
       <el-table-column
         prop="createTime"
         header-align="center"
@@ -55,7 +50,7 @@
         label="创建时间">
       </el-table-column>
       <el-table-column
-        prop="remark"
+        prop="userNum"
         header-align="center"
         align="center"
         label="关联成员数">
