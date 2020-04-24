@@ -4,12 +4,12 @@
       <el-form-item>
         <el-input v-model="dataForm.userName" placeholder="用户名" clearable></el-input>
       </el-form-item>
-      <el-select v-model="value" placeholder="请选择机构">
+      <el-select v-model="dataForm.agencyId" placeholder="请选择机构">
         <el-option
           v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          :key="item.id"
+          :label="item.agencyName"
+          :value="item.id">
         </el-option>
       </el-select>
       <el-form-item>
@@ -44,7 +44,7 @@
         label="成员用户名">
       </el-table-column>
       <el-table-column
-        prop="email"
+        prop="agencyName"
         header-align="center"
         align="center"
         label="所在机构">
@@ -54,6 +54,16 @@
         header-align="center"
         align="center"
         label="角色">
+      </el-table-column>
+      <el-table-column
+        prop="status"
+        header-align="center"
+        align="center"
+        label="状态">
+        <template slot-scope="scope">
+          <el-tag v-if="scope.row.status === 0" size="small" type="danger">禁用</el-tag>
+          <el-tag v-else size="small">正常</el-tag>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -87,7 +97,8 @@
     data () {
       return {
         dataForm: {
-          userName: ''
+          userName: '',
+          agencyId:''
         },
         dataList: [],
         pageIndex: 1,
@@ -125,7 +136,7 @@
         method: 'get',
         params: this.$http.adornParams()
       }).then(({data}) => {
-        this.options = data && data.code === 0 ? data.list : []
+        this.options = data && data.code === 200 ? data.data : []
       });
     },
     methods: {
@@ -138,7 +149,8 @@
           params: this.$http.adornParams({
             'page': this.pageIndex,
             'limit': this.pageSize,
-            'username': this.dataForm.userName
+            'username': this.dataForm.userName,
+            'agencyId':this.dataForm.agencyId
           })
         }).then(({data}) => {
           if (data && data.code === 0) {

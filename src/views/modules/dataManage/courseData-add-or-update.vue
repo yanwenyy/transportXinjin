@@ -4,32 +4,19 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="报名时间" prop="userName">
+      <el-form-item label="报名时间" prop="dataTime">
         <el-date-picker
-          v-model="dataForm.regStart"
+          v-model="dataForm.dataTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="报名人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
+      <el-form-item label="报名人数" prop="enterNum">
+        <el-input type="number" v-model="dataForm.enterNum" placeholder="全款人数"></el-input>
       </el-form-item>
-      <h2 class="addTitle">渠道人数</h2>
-      <el-form-item label="线上" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
-      </el-form-item>
-      <el-form-item label="地推" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="地推"></el-input>
-      </el-form-item>
-      <el-form-item label="教学部" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="教学部"></el-input>
-      </el-form-item>
-      <el-form-item label="画室" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="画室"></el-input>
-      </el-form-item>
-      <el-form-item label="其他" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
+      <el-form-item label="去年同日报名人数" prop="lastYearEnterNum">
+        <el-input type="number" v-model="dataForm.lastYearEnterNum" placeholder="全款人数"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -40,102 +27,48 @@
 </template>
 
 <script>
+  import commonDate from '@/utils/formatDate'
   import { isEmail, isMobile } from '@/utils/validate'
   export default {
     data () {
-      var validatePassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('密码不能为空'))
-        } else {
-          callback()
-        }
-      }
-      var validateComfirmPassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('确认密码不能为空'))
-        } else if (this.dataForm.password !== value) {
-          callback(new Error('确认密码与密码输入不一致'))
-        } else {
-          callback()
-        }
-      }
-      var validateEmail = (rule, value, callback) => {
-        if (!isEmail(value)) {
-          callback(new Error('邮箱格式错误'))
-        } else {
-          callback()
-        }
-      }
-      var validateMobile = (rule, value, callback) => {
-        if (!isMobile(value)) {
-          callback(new Error('手机号格式错误'))
-        } else {
-          callback()
-        }
-      }
       return {
         visible: false,
         roleList: [],
         dataForm: {
           id: 0,
-          userName: '',
-          password: '',
-          comfirmPassword: '',
-          salt: '',
-          email: '',
-          mobile: '',
-          roleIdList: [],
-          status: 1
+          dataTime: '',
+          enterNum: '',
+          lastYearEnterNum: '',
         },
         dataRule: {
-          userName: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' }
+          dataTime: [
+            { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],
-          password: [
-            { validator: validatePassword, trigger: 'blur' }
+          enterNum: [
+            { required: true, message: '报名人数不能为空', trigger: 'blur' }
           ],
-          comfirmPassword: [
-            { validator: validateComfirmPassword, trigger: 'blur' }
+          lastYearEnterNum: [
+            { required: true, message: '去年同日报名人数不能为空', trigger: 'blur' }
           ],
-          email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
-            { validator: validateEmail, trigger: 'blur' }
-          ],
-          mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' },
-            { validator: validateMobile, trigger: 'blur' }
-          ]
         }
       }
     },
     methods: {
       init (id) {
-        this.dataForm.id = id || 0
-        this.$http({
-          url: this.$http.adornUrl('/sys/role/select'),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.roleList = data && data.code === 0 ? data.list : []
-        }).then(() => {
-          this.visible = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields()
-          })
-        }).then(() => {
+        this.dataForm.id = id||0;
+        this.visible = true;
+        this.$nextTick(() => {
+          this.$refs['dataForm'].resetFields();
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/pdculturallessons/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.userName = data.user.username
-                this.dataForm.salt = data.user.salt
-                this.dataForm.email = data.user.email
-                this.dataForm.mobile = data.user.mobile
-                this.dataForm.roleIdList = data.user.roleIdList
-                this.dataForm.status = data.user.status
+              if (data && data.code === 200) {
+                this.dataForm.dataTime = data.data.dataTime;
+                this.dataForm.enterNum = data.data.enterNum;
+                this.dataForm.lastYearEnterNum = data.data.lastYearEnterNum;
               }
             })
           }
@@ -146,20 +79,16 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/pdculturallessons/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'userId': this.dataForm.id || undefined,
-                'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'salt': this.dataForm.salt,
-                'email': this.dataForm.email,
-                'mobile': this.dataForm.mobile,
-                'status': this.dataForm.status,
-                'roleIdList': this.dataForm.roleIdList
+                'id': this.dataForm.id || undefined,
+                'dataTime': this.dataForm.dataTime+" 00:00:00",
+                'enterNum': this.dataForm.enterNum,
+                'lastYearEnterNum': this.dataForm.lastYearEnterNum
               })
             }).then(({data}) => {
-              if (data && data.code === 0) {
+              if (data && data.code === 200) {
                 this.$message({
                   message: '操作成功',
                   type: 'success',
@@ -181,9 +110,9 @@
 </script>
 <style scoped>
   >>> .el-form-item__label{
-    width: 120px!important;
+    width: 150px!important;
   }
   >>> .el-input{
-    width: 90%;
+    width: 85%;
   }
 </style>

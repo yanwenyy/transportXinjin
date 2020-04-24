@@ -4,32 +4,32 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="数据时间" prop="userName">
+      <el-form-item label="数据时间" prop="years">
         <el-date-picker
-          v-model="dataForm.regStart"
-          type="date"
+          v-model="dataForm.years"
+          type="year"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="招生计划人数" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="全款人数"></el-input>
+      <el-form-item label="招生计划人数" prop="studentNum">
+        <el-input type="number" v-model="dataForm.studentNum" placeholder="招生计划人数"></el-input>
       </el-form-item>
       <h2 class="addTitle">渠道招生人数</h2>
-      <el-form-item label="线上" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="线上"></el-input>
+      <el-form-item label="线上" prop="onlineNum">
+        <el-input type="number" v-model="dataForm.onlineNum" placeholder="线上"></el-input>
       </el-form-item>
-      <el-form-item label="地推" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="地推"></el-input>
+      <el-form-item label="地推" prop="pusnNum">
+        <el-input type="number" v-model="dataForm.pusnNum" placeholder="地推"></el-input>
       </el-form-item>
-      <el-form-item label="教学部" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="教学部"></el-input>
+      <el-form-item label="教学部" prop="edcactionNum">
+        <el-input type="number" v-model="dataForm.edcactionNum" placeholder="教学部"></el-input>
       </el-form-item>
-      <el-form-item label="画室" prop="userName">
-        <el-input type="number" v-model="dataForm.userName" placeholder="画室"></el-input>
+      <el-form-item label="画室" prop="studioNum">
+        <el-input type="number" v-model="dataForm.studioNum" placeholder="画室"></el-input>
       </el-form-item>
-      <el-form-item label="其他" prop="userName">
-        <el-input v-model="dataForm.userName" placeholder="其他"></el-input>
+      <el-form-item label="其他" prop="otherNum">
+        <el-input v-model="dataForm.otherNum" placeholder="其他"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -43,99 +43,60 @@
   import { isEmail, isMobile } from '@/utils/validate'
   export default {
     data () {
-      var validatePassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('密码不能为空'))
-        } else {
-          callback()
-        }
-      }
-      var validateComfirmPassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
-          callback(new Error('确认密码不能为空'))
-        } else if (this.dataForm.password !== value) {
-          callback(new Error('确认密码与密码输入不一致'))
-        } else {
-          callback()
-        }
-      }
-      var validateEmail = (rule, value, callback) => {
-        if (!isEmail(value)) {
-          callback(new Error('邮箱格式错误'))
-        } else {
-          callback()
-        }
-      }
-      var validateMobile = (rule, value, callback) => {
-        if (!isMobile(value)) {
-          callback(new Error('手机号格式错误'))
-        } else {
-          callback()
-        }
-      }
       return {
         visible: false,
         roleList: [],
         dataForm: {
           id: 0,
-          userName: '',
-          password: '',
-          comfirmPassword: '',
-          salt: '',
-          email: '',
-          mobile: '',
-          roleIdList: [],
-          status: 1
+          years:'',
+          studentNum: '',
+          onlineNum: '',
+          pusnNum: '',
+          edcactionNum: '',
+          studioNum:'',
+          otherNum: ''
         },
         dataRule: {
-          userName: [
-            { required: true, message: '用户名不能为空', trigger: 'blur' }
+          years: [
+            { required: true, message: '数据时间不能为空', trigger: 'blur' }
+          ],studentNum: [
+            { required: true, message: '招生计划人数不能为空', trigger: 'blur' }
+          ],onlineNum: [
+            { required: true, message: '线上不能为空', trigger: 'blur' }
+          ],pusnNum: [
+            { required: true, message: '地推不能为空', trigger: 'blur' }
+          ],edcactionNum: [
+            { required: true, message: '教学部不能为空', trigger: 'blur' }
+          ],studioNum: [
+            { required: true, message: '画室不能为空', trigger: 'blur' }
+          ],otherNum: [
+            { required: true, message: '其他不能为空', trigger: 'blur' }
           ],
-          password: [
-            { validator: validatePassword, trigger: 'blur' }
-          ],
-          comfirmPassword: [
-            { validator: validateComfirmPassword, trigger: 'blur' }
-          ],
-          email: [
-            { required: true, message: '邮箱不能为空', trigger: 'blur' },
-            { validator: validateEmail, trigger: 'blur' }
-          ],
-          mobile: [
-            { required: true, message: '手机号不能为空', trigger: 'blur' },
-            { validator: validateMobile, trigger: 'blur' }
-          ]
+
         }
       }
     },
     methods: {
       init (id) {
-        this.dataForm.id = id || 0
-        this.$http({
-          url: this.$http.adornUrl('/sys/role/select'),
-          method: 'get',
-          params: this.$http.adornParams()
-        }).then(({data}) => {
-          this.roleList = data && data.code === 0 ? data.list : []
-        }).then(() => {
-          this.visible = true
-          this.$nextTick(() => {
-            this.$refs['dataForm'].resetFields()
-          })
-        }).then(() => {
+        this.dataForm.id = id||0;
+        this.visible = true;
+        this.$nextTick(() => {
+          this.$refs['dataForm'].resetFields();
           if (this.dataForm.id) {
+            this.$refs['dataForm'].resetFields();
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/pdenrollmentgoal/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
-              if (data && data.code === 0) {
-                this.dataForm.userName = data.user.username
-                this.dataForm.salt = data.user.salt
-                this.dataForm.email = data.user.email
-                this.dataForm.mobile = data.user.mobile
-                this.dataForm.roleIdList = data.user.roleIdList
-                this.dataForm.status = data.user.status
+              if (data && data.code === 200) {
+                this.dataForm.years = data.data.years;
+                this.dataForm.studentNum = data.data.studentNum;
+                this.dataForm.onlineNum = data.data.onlineNum;
+                this.dataForm.pusnNum = data.data.pusnNum;
+                this.dataForm.edcactionNum = data.data.edcactionNum;
+                this.dataForm.studioNum = data.data.studioNum;
+                this.dataForm.otherNum = data.data.otherNum;
               }
             })
           }
@@ -146,20 +107,20 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/sys/user/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/pdenrollmentgoal/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'userId': this.dataForm.id || undefined,
-                'username': this.dataForm.userName,
-                'password': this.dataForm.password,
-                'salt': this.dataForm.salt,
-                'email': this.dataForm.email,
-                'mobile': this.dataForm.mobile,
-                'status': this.dataForm.status,
-                'roleIdList': this.dataForm.roleIdList
+                'id': this.dataForm.id || undefined,
+                'years': this.dataForm.years,
+                'studentNum': Number(this.dataForm.studentNum),
+                'onlineNum': Number(this.dataForm.onlineNum),
+                'pusnNum': Number(this.dataForm.pusnNum),
+                'edcactionNum': Number(this.dataForm.edcactionNum),
+                'studioNum': Number(this.dataForm.studioNum),
+                'otherNum': Number(this.dataForm.otherNum)
               })
             }).then(({data}) => {
-              if (data && data.code === 0) {
+              if (data && data.code === 200) {
                 this.$message({
                   message: '操作成功',
                   type: 'success',

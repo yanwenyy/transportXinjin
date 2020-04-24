@@ -5,13 +5,13 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="80px">
-      <el-form-item label="请选择机构" prop="userName">
-        <el-select v-model="value" placeholder="请选择机构">
+      <el-form-item label="请选择机构" prop="agencyName">
+        <el-select clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.id"
+            :label="item.agencyName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -92,6 +92,7 @@
           mobile: '',
           roleIdList: [],
           status: 1,
+          agencyId:''
         },
         options: [{
           value: '选项1',
@@ -113,6 +114,9 @@
         dataRule: {
           userName: [
             {required: true, message: '用户名不能为空', trigger: 'blur'}
+          ],
+          agencyId:[
+            {required: true, message: '机构名不能为空', trigger: 'blur'}
           ],
           password: [
             {validator: validatePassword, trigger: 'blur'}
@@ -144,6 +148,13 @@
           this.visible = true
           this.$nextTick(() => {
             this.$refs['dataForm'].resetFields()
+          });
+          this.$http({
+            url: this.$http.adornUrl('/biz/pdagency/down/list'),
+            method: 'get',
+            params: this.$http.adornParams()
+          }).then(({data}) => {
+            this.options = data && data.code === 200 ? data.data : []
           })
         }).then(() => {
           if (this.dataForm.id) {
@@ -153,11 +164,12 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 0) {
-                this.dataForm.userName = data.user.username
-                this.dataForm.salt = data.user.salt
-                this.dataForm.email = data.user.email
-                this.dataForm.mobile = data.user.mobile
-                this.dataForm.roleIdList = data.user.roleIdList
+                this.dataForm.userName = data.user.username;
+                this.dataForm.agencyId = data.user.agencyId;
+                this.dataForm.salt = data.user.salt;
+                this.dataForm.email = data.user.email;
+                this.dataForm.mobile = data.user.mobile;
+                this.dataForm.roleIdList = data.user.roleIdList;
                 this.dataForm.status = data.user.status
               }
             })
@@ -166,6 +178,7 @@
       },
       // 表单提交
       dataFormSubmit() {
+        console.log(this.dataForm.agencyId)
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -173,6 +186,7 @@
               method: 'post',
               data: this.$http.adornData({
                 'userId': this.dataForm.id || undefined,
+                'agencyId':this.dataForm.agencyId,
                 'username': this.dataForm.userName,
                 'password': this.dataForm.password,
                 'salt': this.dataForm.salt,

@@ -1,24 +1,24 @@
 <template>
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-select v-model="value" placeholder="请选择机构">
+      <el-select clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
         <el-option
           v-for="item in options"
-          :key="item.value"
-          :label="item.label"
-          :value="item.value">
+          :key="item.id"
+          :label="item.agencyName"
+          :value="item.id">
         </el-option>
       </el-select>
       <el-form-item label="选择时间:">
         <el-date-picker
-          v-model="dataForm.regStart"
+          v-model="dataForm.startTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="开始时间">
         </el-date-picker>
         <span>--</span>
         <el-date-picker
-          v-model="dataForm.regEnd"
+          v-model="dataForm.endTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="结束时间">
@@ -26,7 +26,7 @@
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="isAuth('sys:user:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-button v-if="isAuth('biz:pdculturallessons:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
@@ -43,60 +43,31 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="userId"
+        prop="id"
         header-align="center"
         align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="username"
+        prop="agencyName"
         align="center"
         label="机构名称">
       </el-table-column>
       <el-table-column
-        prop="username"
+        prop="enterNum"
         header-align="center"
         align="center"
         label="报名人数(人)">
       </el-table-column>
       <el-table-column
+        prop="lastYearEnterNum"
         header-align="center"
         align="center"
-        label="各渠道报名人数(人)">
-        <el-table-column
-          prop="username"
-          header-align="center"
-          align="center"
-          label="线上">
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          header-align="center"
-          align="center"
-          label="地推">
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          header-align="center"
-          align="center"
-          label="教学部">
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          header-align="center"
-          align="center"
-          label="其他">
-        </el-table-column>
-        <el-table-column
-          prop="username"
-          header-align="center"
-          align="center"
-          label="线上">
-        </el-table-column>
+        label="去年同日报名人数(人)">
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="insertTime"
         header-align="center"
         align="center"
         label="创建时间">
@@ -108,8 +79,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('sys:user:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.userId)">修改</el-button>
-          <el-button v-if="isAuth('sys:user:delete')" type="text" size="small" @click="deleteHandle(scope.row.userId)">删除</el-button>
+          <el-button v-if="isAuth('biz:pdculturallessons:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="isAuth('biz:pdculturallessons:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -133,7 +104,9 @@
     data () {
       return {
         dataForm: {
-          userName: ''
+          agencyId: '',
+          startTime: '',
+          endTime: '',
         },
         dataList: [],
         pageIndex: 1,
@@ -166,7 +139,14 @@
       AddOrUpdate
     },
     activated () {
-      this.getDataList()
+      this.getDataList();
+      this.$http({
+        url: this.$http.adornUrl('/biz/pdagency/down/list'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({data}) => {
+        this.options = data && data.code === 200 ? data.data : []
+      })
     },
     methods: {
       // 获取数据列表
@@ -174,17 +154,19 @@
         console.log(this.value1)
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/sys/user/list'),
+          url: this.$http.adornUrl('/biz/pdculturallessons/list'),
           method: 'get',
           params: this.$http.adornParams({
-            'page': this.pageIndex,
-            'limit': this.pageSize,
-            'username': this.dataForm.userName
+            'pageNum': this.pageIndex,
+            'pageSize': this.pageSize,
+            'agencyId': this.dataForm.agencyId,
+            'startTime': this.dataForm.startTime,
+            'endTime': this.dataForm.endTime
           })
         }).then(({data}) => {
-          if (data && data.code === 0) {
-            this.dataList = data.page.list
-            this.totalPage = data.page.totalCount
+          if (data && data.code === 200) {
+            this.dataList = data.data.list
+            this.totalPage = data.data.totalCount
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -225,11 +207,11 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/sys/user/delete'),
+            url: this.$http.adornUrl('/biz/pdculturallessons/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
-            if (data && data.code === 0) {
+            if (data && data.code === 200) {
               this.$message({
                 message: '操作成功',
                 type: 'success',
