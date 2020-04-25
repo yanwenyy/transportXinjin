@@ -6,7 +6,7 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="80px">
       <el-form-item label="请选择机构" prop="agencyName">
-        <el-select clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
+        <el-select v-if="isAuth('biz:pdagency:down:list')" clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
           <el-option
             v-for="item in options"
             :key="item.id"

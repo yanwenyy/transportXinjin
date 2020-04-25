@@ -22,13 +22,13 @@
         align="center"
         width="50">
       </el-table-column>
-      <!--<el-table-column-->
-        <!--prop="id"-->
-        <!--header-align="center"-->
-        <!--align="center"-->
-        <!--width="80"-->
-        <!--label="ID">-->
-      <!--</el-table-column>-->
+      <el-table-column
+        prop="id"
+        header-align="center"
+        align="center"
+        width="80"
+        label="机构ID">
+      </el-table-column>
       <el-table-column
         prop="agencyName"
         header-align="center"

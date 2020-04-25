@@ -6,7 +6,7 @@
         type="year"
         placeholder="请选择年份">
       </el-date-picker>
-      <el-select clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
+      <el-select v-if="isAuth('biz:pdagency:down:list')"  clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
         <el-option
           v-for="item in options"
           :key="item.id"
