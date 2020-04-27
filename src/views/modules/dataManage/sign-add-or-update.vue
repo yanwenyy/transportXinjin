@@ -1,11 +1,11 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' : author==''?'修改':'查看'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="数据时间" prop="dateTime">
-        <el-date-picker
+        <el-date-picker :disabled="author!=''"
           v-model="dataForm.dateTime"
           type="date"
           value-format="yyyy-MM-dd"
@@ -13,32 +13,32 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="全款人数" prop="fullMoneyNum">
-        <el-input type="number" min="0" v-model="dataForm.fullMoneyNum" placeholder="全款人数"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.fullMoneyNum" placeholder="全款人数"></el-input>
       </el-form-item>
       <el-form-item label="定金人数" prop="frontMoneyNum">
-        <el-input type="number" min="0" v-model="dataForm.frontMoneyNum" placeholder="定金人数"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.frontMoneyNum" placeholder="定金人数"></el-input>
       </el-form-item>
       <el-form-item label="定金转全款人数" prop="fronFullNum">
-        <el-input type="number" min="0" v-model="dataForm.fronFullNum" placeholder="定金转全款人数"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.fronFullNum" placeholder="定金转全款人数"></el-input>
       </el-form-item>
       <el-form-item  label="去年同日定金转+全款总计人数" prop="lastYearNum">
-        <el-input type="number" min="0" v-model="dataForm.lastYearNum"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.lastYearNum"></el-input>
       </el-form-item>
       <h2 class="addTitle">渠道人数</h2>
       <el-form-item label="线上" prop="onlineNum">
-        <el-input type="number" min="0" v-model="dataForm.onlineNum" placeholder="线上"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.onlineNum" placeholder="线上"></el-input>
       </el-form-item>
       <el-form-item label="地推" prop="pusnNum">
-        <el-input type="number" min="0" v-model="dataForm.pusnNum" placeholder="地推"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.pusnNum" placeholder="地推"></el-input>
       </el-form-item>
       <el-form-item label="教学部" prop="edcactionNum">
-        <el-input type="number" min="0" v-model="dataForm.edcactionNum" placeholder="教学部"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.edcactionNum" placeholder="教学部"></el-input>
       </el-form-item>
       <el-form-item label="画室" prop="studioNum">
-        <el-input type="number" min="0" v-model="dataForm.studioNum" placeholder="画室"></el-input>
+        <el-input :disabled="author!=''" type="number" min="0" v-model="dataForm.studioNum" placeholder="画室"></el-input>
       </el-form-item>
       <el-form-item label="其他" prop="otherNum">
-        <el-input v-model="dataForm.otherNum" placeholder="其他"></el-input>
+        <el-input :disabled="author!=''" v-model="dataForm.otherNum" placeholder="其他"></el-input>
       </el-form-item>
     </el-form>
     <span v-if="author==''" slot="footer" class="dialog-footer">
@@ -105,7 +105,8 @@
       }
     },
     methods: {
-      init (id) {
+      init (id,author) {
+        this.author=author||'';
         this.dataForm.id = id||0;
         this.visible = true;
         this.$nextTick(() => {
@@ -141,8 +142,8 @@
               url: this.$http.adornUrl(`/biz/pdsignup/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
-                'agencyId': this.dataForm.id || undefined,
-                'dateTime': this.dataForm.dateTime+" 00:00:00",
+                'id': this.dataForm.id || undefined,
+                'dataTime': this.dataForm.dateTime+" 00:00:00",
                 'fullMoneyNum': this.dataForm.fullMoneyNum,
                 'frontMoneyNum': this.dataForm.frontMoneyNum,
                 'fronFullNum': this.dataForm.fronFullNum,
