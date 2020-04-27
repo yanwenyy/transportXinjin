@@ -13,10 +13,10 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="报名人数" prop="enterNum">
-        <el-input type="number" v-model="dataForm.enterNum" placeholder="全款人数"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.enterNum" placeholder="全款人数"></el-input>
       </el-form-item>
       <el-form-item label="去年同日报名人数" prop="lastYearEnterNum">
-        <el-input type="number" v-model="dataForm.lastYearEnterNum" placeholder="全款人数"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.lastYearEnterNum" placeholder="全款人数"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">

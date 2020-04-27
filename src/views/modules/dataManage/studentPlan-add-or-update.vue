@@ -13,20 +13,20 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="招生计划人数" prop="studentNum">
-        <el-input type="number" v-model="dataForm.studentNum" placeholder="招生计划人数"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.studentNum" placeholder="招生计划人数"></el-input>
       </el-form-item>
       <h2 class="addTitle">渠道招生人数</h2>
       <el-form-item label="线上" prop="onlineNum">
-        <el-input type="number" v-model="dataForm.onlineNum" placeholder="线上"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.onlineNum" placeholder="线上"></el-input>
       </el-form-item>
       <el-form-item label="地推" prop="pusnNum">
-        <el-input type="number" v-model="dataForm.pusnNum" placeholder="地推"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.pusnNum" placeholder="地推"></el-input>
       </el-form-item>
       <el-form-item label="教学部" prop="edcactionNum">
-        <el-input type="number" v-model="dataForm.edcactionNum" placeholder="教学部"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.edcactionNum" placeholder="教学部"></el-input>
       </el-form-item>
       <el-form-item label="画室" prop="studioNum">
-        <el-input type="number" v-model="dataForm.studioNum" placeholder="画室"></el-input>
+        <el-input type="number" min="0" v-model="dataForm.studioNum" placeholder="画室"></el-input>
       </el-form-item>
       <el-form-item label="其他" prop="otherNum">
         <el-input v-model="dataForm.otherNum" placeholder="其他"></el-input>
