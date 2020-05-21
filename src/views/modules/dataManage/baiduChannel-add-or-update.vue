@@ -72,10 +72,10 @@
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dataTime = data.user.dataTime;
-                this.dataForm.dataAmount = data.user.dataAmount;
-                this.dataForm.effectiveData = data.user.effectiveData;
-                this.dataForm.todayConsumeMoney = data.user.todayConsumeMoney;
+                this.dataForm.dataTime = data.data.dataTime;
+                this.dataForm.dataAmount = data.data.dataAmount;
+                this.dataForm.effectiveData = data.data.effectiveData;
+                this.dataForm.todayConsumeMoney = data.data.todayConsumeMoney;
               }
             })
           }

@@ -81,14 +81,14 @@
         label="今日消费(元)">
       </el-table-column>
       <el-table-column
-        prop="effective"
+        prop="effectiveData"
         header-align="center"
         align="center"
         width="180"
-        label="单个有效数据成本">
-        <template slot-scope="scope">
-          {{ (scope.row.effective).toFixed(2)*100+"%"}}
-        </template>
+        label="单个有效数据成本(元)">
+        <!--<template slot-scope="scope">-->
+          <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
+        <!--</template>-->
       </el-table-column>
       <el-table-column
         fixed="right"

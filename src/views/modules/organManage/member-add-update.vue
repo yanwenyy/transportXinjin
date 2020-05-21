@@ -150,7 +150,7 @@
             this.$refs['dataForm'].resetFields()
           });
           this.$http({
-            url: this.$http.adornUrl('/biz/pdagency/down/list'),
+            url: this.$http.adornUrl('/biz/pdagency/down/list?type=0'),
             method: 'get',
             params: this.$http.adornParams()
           }).then(({data}) => {

@@ -68,14 +68,14 @@
         }).then(() => {
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/pddatacollection/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/pddatacollection/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dataTime = data.user.dataTime;
-                this.dataForm.dataAmount = data.user.dataAmount;
-                this.dataForm.effectiveData = data.user.effectiveData;
+                this.dataForm.dataTime = data.data.dataTime;
+                this.dataForm.dataAmount = data.data.dataAmount;
+                this.dataForm.effectiveData = data.data.effectiveData;
               }
             })
           }

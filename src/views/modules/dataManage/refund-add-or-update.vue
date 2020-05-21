@@ -85,6 +85,7 @@
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
                 'dataTime': this.dataForm.dataTime+" 00:00:00",
+                'refundNum':this.dataForm.refundNum,
                 'refundMoney': this.dataForm.refundMoney
               })
             }).then(({data}) => {

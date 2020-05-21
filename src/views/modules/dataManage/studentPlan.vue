@@ -128,7 +128,7 @@
         </el-table-column>
       </el-table-column>
       <el-table-column
-        prop="createTime"
+        prop="enrollmentYear"
         header-align="center"
         align="center"
         label="年份">

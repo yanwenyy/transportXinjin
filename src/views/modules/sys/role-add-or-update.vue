@@ -10,7 +10,7 @@
       <el-form-item label="备注" prop="remark">
         <el-input v-model="dataForm.remark" placeholder="备注"></el-input>
       </el-form-item>
-      <el-form-item size="mini" label="授权">
+      <el-form-item size="mini" label="授权"  prop="sq">
         <el-tree
           :data="menuList"
           :props="menuListTreeProps"
@@ -38,6 +38,13 @@
   import { treeDataTranslate } from '@/utils'
   export default {
     data () {
+      var checkTree = (rule, value, callback) => {
+        if (this.$refs.menuListTree.getCheckedKeys()=='') {
+          callback(new Error('授权不能为空'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         menuList: [],
@@ -54,7 +61,10 @@
         dataRule: {
           roleName: [
             { required: true, message: '角色名称不能为空', trigger: 'blur' }
-          ]
+          ],
+          sq: [
+            { validator: checkTree, trigger: 'change' }
+          ],
         },
         tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化
       }
