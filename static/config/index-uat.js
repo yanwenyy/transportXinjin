@@ -5,7 +5,7 @@
   window.SITE_CONFIG = {};
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://123.57.42.98:8080/px_edu';
+  window.SITE_CONFIG['baseUrl'] = 'http://bobao.yingtaiwx.com/px_edu';
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain']  = './'; // 域名
