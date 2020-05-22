@@ -128,7 +128,9 @@
                     this.$emit('refreshDataList')
                   }
                 })
-              } else {
+              }else if(data.code==300){
+                this.$message.error('该角色已存在,请换角色名称')
+              } else{
                 this.$message.error(data.msg)
               }
             })

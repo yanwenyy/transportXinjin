@@ -84,6 +84,8 @@
                     this.$emit('refreshDataList')
                   }
                 })
+              }else if(data.code==300){
+                this.$message.error('该机构已存在,请换机构名称')
               } else {
                 this.$message.error(data.msg)
               }
