@@ -6,7 +6,7 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()"
              label-width="80px">
       <el-form-item label="请选择机构" prop="agencyName">
-        <el-select v-if="isAuth('biz:pdagency:down:list')" clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
+        <el-select :disabled="dataForm.id!=0" v-if="isAuth('biz:pdagency:down:list')" clearable  v-model="dataForm.agencyId" placeholder="请选择机构">
           <el-option
             v-for="item in options"
             :key="item.id"
@@ -18,10 +18,12 @@
       <el-form-item label="用户名" prop="userName">
         <el-input v-model="dataForm.userName" placeholder="登录帐号"></el-input>
       </el-form-item>
-      <el-form-item label="密码" prop="password" :class="{ 'is-required': !dataForm.id }">
+      <!--:class="{ 'is-required': !dataForm.id }"-->
+      <el-form-item label="密码" prop="password" >
         <el-input v-model="dataForm.password" type="password" placeholder="密码"></el-input>
       </el-form-item>
-      <el-form-item label="确认密码" prop="comfirmPassword" :class="{ 'is-required': !dataForm.id }">
+      <!--:class="{ 'is-required': !dataForm.id }"-->
+      <el-form-item label="确认密码" prop="comfirmPassword">
         <el-input v-model="dataForm.comfirmPassword" type="password" placeholder="确认密码"></el-input>
       </el-form-item>
       <el-form-item label="指定角色" size="mini" prop="roleIdList">
@@ -50,14 +52,14 @@
   export default {
     data() {
       var validatePassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
+        if ( !/\S/.test(value)) {
           callback(new Error('密码不能为空'))
         } else {
           callback()
         }
       }
       var validateComfirmPassword = (rule, value, callback) => {
-        if (!this.dataForm.id && !/\S/.test(value)) {
+        if ( !/\S/.test(value)) {
           callback(new Error('确认密码不能为空'))
         } else if (this.dataForm.password !== value) {
           callback(new Error('确认密码与密码输入不一致'))
@@ -119,10 +121,10 @@
             {required: true, message: '机构名不能为空', trigger: 'blur'}
           ],
           password: [
-            {validator: validatePassword, trigger: 'blur'}
+            {required: true,validator: validatePassword, trigger: 'blur'}
           ],
           comfirmPassword: [
-            {validator: validateComfirmPassword, trigger: 'blur'}
+            {required: true,validator: validateComfirmPassword, trigger: 'blur'}
           ],
           email: [
             {required: true, message: '邮箱不能为空', trigger: 'blur'},
@@ -137,6 +139,7 @@
     },
     methods: {
       init(id) {
+        console.log(this.dataForm.id)
         this.dataForm.id = id || 0
         this.$http({
           url: this.$http.adornUrl('/sys/role/select'),
@@ -165,6 +168,8 @@
             }).then(({data}) => {
               if (data && data.code === 0) {
                 this.dataForm.userName = data.user.username;
+                // this.dataForm.password = data.user.password;
+                // this.dataForm.comfirmPassword = data.user.password;
                 this.dataForm.agencyId = data.user.agencyId;
                 this.dataForm.salt = data.user.salt;
                 this.dataForm.email = data.user.email;

@@ -28,9 +28,18 @@
 
 <script>
   import commonDate from '@/utils/formatDate'
-  import { isEmail, isMobile } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate'
   export default {
     data () {
+      var validateInteger = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!isInteger(value)) {
+          callback(new Error('人数格式不正确'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -45,10 +54,10 @@
             { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],
           enterNum: [
-            { required: true, message: '报名人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           lastYearEnterNum: [
-            { required: true, message: '去年同日报名人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
         }
       }

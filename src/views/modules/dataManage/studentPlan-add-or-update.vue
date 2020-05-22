@@ -40,9 +40,18 @@
 </template>
 
 <script>
-  import { isEmail, isMobile } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate'
   export default {
     data () {
+      var validateInteger = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!isInteger(value)) {
+          callback(new Error('人数格式不正确'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -60,17 +69,17 @@
           years: [
             { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],studentNum: [
-            { required: true, message: '招生计划人数不能为空', trigger: 'blur' }
+            { required: true,validator: validateInteger, trigger: 'blur' }
           ],onlineNum: [
-            { required: true, message: '线上不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],pusnNum: [
-            { required: true, message: '地推不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],edcactionNum: [
-            { required: true, message: '教学部不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],studioNum: [
-            { required: true, message: '画室不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],otherNum: [
-            { required: true, message: '其他不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
 
         }

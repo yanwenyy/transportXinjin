@@ -27,9 +27,18 @@
 </template>
 
 <script>
-  import { isEmail, isMobile } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate'
   export default {
     data () {
+      var validateInteger = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!isInteger(value)) {
+          callback(new Error('格式不正确'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -43,9 +52,9 @@
           dataTime: [
             { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],dataAmount: [
-            { required: true, message: '数据获取量不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],effectiveData: [
-            { required: true, message: '有效数据不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ]
 
         }

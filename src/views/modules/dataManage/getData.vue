@@ -161,7 +161,6 @@
     methods: {
       // 获取数据列表
       getDataList () {
-        console.log(this.value1)
         this.dataListLoading = true
         this.$http({
           url: this.$http.adornUrl('/biz/pddatacollection/list'),
@@ -211,7 +210,7 @@
         var userIds = id ? [id] : this.dataListSelections.map(item => {
           return item.userId
         })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+        this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

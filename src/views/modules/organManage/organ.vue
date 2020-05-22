@@ -141,7 +141,8 @@
         var userIds = id ? [id] : this.dataListSelections.map(item => {
           return item.userId
         })
-        this.$confirm(`确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`, '提示', {
+          // `确定对[id=${userIds.join(',')}]进行[${id ? '删除' : '批量删除'}]操作?`
+        this.$confirm(`删除该机构后,该机构下的所有数据将会消失,确认删除吗?`, '提示', {
           confirmButtonText: '确定',
           cancelButtonText: '取消',
           type: 'warning'

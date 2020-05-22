@@ -49,9 +49,18 @@
 </template>
 
 <script>
-  import { isEmail, isMobile } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate'
   export default {
     data () {
+      var validateInteger = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!isInteger(value)) {
+          callback(new Error('人数格式不正确'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -75,31 +84,31 @@
             { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],
           fullMoneyNum: [
-            { required: true, message: '全款人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           frontMoneyNum: [
-            { required: true, message: '定金人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           fronFullNum: [
-            { required: true, message: '定金转全款人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger,trigger: 'blur' }
           ],
           lastYearNum: [
-            { required: true, message: '去年同日定金+全款人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           onlineNum: [
-            { required: true, message: '线上不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           pusnNum: [
-            { required: true, message: '地推不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           edcactionNum: [
-            { required: true, message: '教学部不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           studioNum: [
-            { required: true, message: '画室不能为空', trigger: 'blur' }
+            { required: true,validator: validateInteger, trigger: 'blur' }
           ],
           otherNum: [
-            { required: true, message: '其他不能为空', trigger: 'blur' }
+            { required: true,validator: validateInteger, trigger: 'blur' }
           ],
         }
       }
@@ -138,37 +147,42 @@
       dataFormSubmit () {
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
-            this.$http({
-              url: this.$http.adornUrl(`/biz/pdsignup/${!this.dataForm.id ? 'save' : 'update'}`),
-              method: 'post',
-              data: this.$http.adornData({
-                'id': this.dataForm.id || undefined,
-                'dataTime': this.dataForm.dateTime+" 00:00:00",
-                'fullMoneyNum': this.dataForm.fullMoneyNum,
-                'frontMoneyNum': this.dataForm.frontMoneyNum,
-                'fronFullNum': this.dataForm.fronFullNum,
-                'lastYearNum': this.dataForm.lastYearNum,
-                'pusnNum': this.dataForm.pusnNum,
-                'edcactionNum': this.dataForm.edcactionNum,
-                'studioNum': this.dataForm.studioNum,
-                'onlineNum': this.dataForm.onlineNum,
-                'otherNum': this.dataForm.otherNum,
-              })
-            }).then(({data}) => {
-              if (data && data.code === 200) {
-                this.$message({
-                  message: '操作成功',
-                  type: 'success',
-                  duration: 1500,
-                  onClose: () => {
-                    this.visible = false
-                    this.$emit('refreshDataList')
-                  }
+            var _data=this.dataForm;
+            if(Number(_data.frontMoneyNum)+Number(_data.fullMoneyNum)!=(Number(_data.onlineNum)+Number(_data.pusnNum)+Number(_data.edcactionNum)+Number(_data.studioNum)+Number(_data.otherNum))){
+              this.$message.error('请重新检查数据并保持一致')
+            }else{
+              this.$http({
+                url: this.$http.adornUrl(`/biz/pdsignup/${!this.dataForm.id ? 'save' : 'update'}`),
+                method: 'post',
+                data: this.$http.adornData({
+                  'id': this.dataForm.id || undefined,
+                  'dataTime': this.dataForm.dateTime+" 00:00:00",
+                  'fullMoneyNum': this.dataForm.fullMoneyNum,
+                  'frontMoneyNum': this.dataForm.frontMoneyNum,
+                  'fronFullNum': this.dataForm.fronFullNum,
+                  'lastYearNum': this.dataForm.lastYearNum,
+                  'pusnNum': this.dataForm.pusnNum,
+                  'edcactionNum': this.dataForm.edcactionNum,
+                  'studioNum': this.dataForm.studioNum,
+                  'onlineNum': this.dataForm.onlineNum,
+                  'otherNum': this.dataForm.otherNum,
                 })
-              } else {
-                this.$message.error(data.msg)
-              }
-            })
+              }).then(({data}) => {
+                if (data && data.code === 200) {
+                  this.$message({
+                    message: '操作成功',
+                    type: 'success',
+                    duration: 1500,
+                    onClose: () => {
+                      this.visible = false
+                      this.$emit('refreshDataList')
+                    }
+                  })
+                } else {
+                  this.$message.error(data.msg)
+                }
+              })
+            }
           }
         })
       }

@@ -63,7 +63,7 @@
             { required: true, message: '角色名称不能为空', trigger: 'blur' }
           ],
           sq: [
-            { validator: checkTree, trigger: 'change' }
+            { required: true, validator: checkTree, trigger: 'change' }
           ],
         },
         tempKey: -666666 // 临时key, 用于解决tree半选中状态项不能传给后台接口问题. # 待优化

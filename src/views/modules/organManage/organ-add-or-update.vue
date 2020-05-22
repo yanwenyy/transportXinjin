@@ -5,7 +5,7 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="学校名称" prop="agencyName">
-        <el-input v-model="dataForm.agencyName" placeholder="学校名称" maxlength="10"></el-input>
+        <el-input v-model="dataForm.agencyName" placeholder="学校名称"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -19,6 +19,15 @@
   import { isEmail, isMobile } from '@/utils/validate'
   export default {
     data () {
+      var validateName = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('机构名不能为空'))
+        }else if (value.length>10) {
+          callback(new Error('机构名称不能大于10个字'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -29,7 +38,7 @@
         },
         dataRule: {
           agencyName: [
-            { required: true, message: '机构名不能为空', trigger: 'blur' }
+            { required: true,validator: validateName,  trigger: 'blur' }
           ]
         }
       }

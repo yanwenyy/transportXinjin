@@ -27,9 +27,27 @@
 </template>
 
 <script>
-  import { isEmail, isMobile } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate'
   export default {
     data () {
+      var validateInteger = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!isInteger(value)) {
+          callback(new Error('人数格式不正确'))
+        } else {
+          callback()
+        }
+      };
+      var validateMoney = (rule, value, callback) => {
+        if(!value){
+          callback(new Error('不能为空'))
+        }else if (!/(^[1-9]([0-9]+)?(\.[0-9]{1,2})?$)|(^(0){1}$)|(^[0-9]\.[0-9]([0-9])?$)/.test(value)) {
+          callback(new Error('金额格式不正确'))
+        } else {
+          callback()
+        }
+      };
       return {
         visible: false,
         roleList: [],
@@ -44,10 +62,10 @@
             { required: true, message: '数据时间不能为空', trigger: 'blur' }
           ],
           refundNum: [
-            { required: true, message: '退款人数不能为空', trigger: 'blur' }
+            { required: true, validator: validateInteger, trigger: 'blur' }
           ],
           refundMoney: [
-            { required: true, message: '退款金额不能为空', trigger: 'blur' }
+            { required: true, validator: validateMoney, trigger: 'blur' }
           ]
         }
       }

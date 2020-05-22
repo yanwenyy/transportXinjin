@@ -29,3 +29,7 @@ export function isPhone (s) {
 export function isURL (s) {
   return /^http[s]?:\/\/.*/.test(s)
 }
+
+export function isInteger(s) {
+  return /^([0]|[1-9][0-9]*)$/.test(s)
+}
