@@ -81,7 +81,7 @@
         label="今日消费(元)">
       </el-table-column>
       <el-table-column
-        prop="effectiveData"
+        prop="effectiveRate"
         header-align="center"
         align="center"
         width="180"
