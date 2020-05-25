@@ -34,7 +34,7 @@
   export default {
     data () {
       var validateInteger = (rule, value, callback) => {
-        if(value==''){
+        if(value===''){
           callback(new Error('不能为空'))
         }else if (!isInteger(value)) {
           callback(new Error('格式不正确'))
