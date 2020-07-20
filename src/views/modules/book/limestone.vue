@@ -45,11 +45,7 @@
         align="center"
         label="车号">
       </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="集装箱号">
-      </el-table-column>
+
       <el-table-column
         prop="dataAmount"
         header-align="center"
@@ -160,6 +156,7 @@
         header-align="center"
         align="center"
         label="入厂出厂照片">
+        <img class="table-list-img" src="" alt="">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -188,7 +185,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './railway-add-or-update'
+  import AddOrUpdate from './limestone-add-or-update'
   export default {
     data () {
       return {

@@ -9,11 +9,11 @@
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="车牌号:">
-        <el-input v-model="dataForm.name" placeholder="车牌号" clearable></el-input>
+      <el-form-item label="车号:">
+        <el-input v-model="dataForm.name" placeholder="车号" clearable></el-input>
       </el-form-item>
-      <el-form-item label="物料名称:">
-        <el-input v-model="dataForm.name" placeholder="物料名称" clearable></el-input>
+      <el-form-item label="客户名称:">
+        <el-input v-model="dataForm.name" placeholder="客户名称" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -43,123 +43,34 @@
       <el-table-column
         prop="agencyName"
         align="center"
-        label="车号">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="集装箱号">
+        label="客户名称">
       </el-table-column>
       <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
-        label="入厂时间">
+        label="出场时间">
       </el-table-column>
       <el-table-column
         prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="过重时间">
-      </el-table-column>
-      <el-table-column
-        prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="物料编码">
-      </el-table-column>
-      <el-table-column
-        prop="effective"
-        header-align="center"
-        align="center"
-        label="物料名称">
-        <!--<template slot-scope="scope">-->
-        <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
-        <!--</template>-->
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="毛重">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="皮重">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
         header-align="center"
         align="center"
         label="净重">
       </el-table-column>
       <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="发货工厂编号">
-      </el-table-column>
-      <el-table-column
         prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="发货工厂描述">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="发出库存地">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="计量单号">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
-        header-align="center"
-        align="center"
-        label="联单号">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="收货工厂编码">
-      </el-table-column>
-      <el-table-column
-        prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="收货工厂描述">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="接受库存地">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="回皮时间">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
-        header-align="center"
-        align="center"
-        label="出厂时间">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
         header-align="center"
         align="center"
         label="车辆排放标准">
       </el-table-column>
       <el-table-column
-        prop="todayConsumeMoney"
+        prop="effective"
         header-align="center"
         align="center"
-        label="入厂出厂照片">
+        label="车号">
+        <!--<template slot-scope="scope">-->
+        <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
+        <!--</template>-->
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -188,7 +99,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './railway-add-or-update'
+  import AddOrUpdate from './waterSlag-add-or-update'
   export default {
     data () {
       return {

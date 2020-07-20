@@ -46,11 +46,6 @@
         label="车号">
       </el-table-column>
       <el-table-column
-        prop=""
-        align="center"
-        label="集装箱号">
-      </el-table-column>
-      <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
@@ -72,7 +67,6 @@
         prop="effective"
         header-align="center"
         align="center"
-        width="180"
         label="物料名称">
         <!--<template slot-scope="scope">-->
         <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->

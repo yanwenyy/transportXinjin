@@ -5,7 +5,7 @@
   window.SITE_CONFIG = {};
 
   // api接口请求地址
-  window.SITE_CONFIG['baseUrl'] = 'http://bobao.yingtaiwx.com/px_edu';
+  window.SITE_CONFIG['baseUrl'] = 'http://59.110.242.178:8080/jinding-back/';
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain']  = './'; // 域名

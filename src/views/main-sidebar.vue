@@ -10,48 +10,70 @@
           <icon-svg name="shouye" class="site-sidebar__menu-icon"></icon-svg>
           <span slot="title">首页</span>
         </el-menu-item>
-        <el-submenu index="demo">
-          <template slot="title">
-            <icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>
-            <span>demo</span>
-          </template>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'demo-echarts' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">echarts</span>
-          </el-menu-item>
-          <el-menu-item index="demo-ueditor" @click="$router.push({ name: 'demo-ueditor' })">
-            <icon-svg name="editor" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">ueditor</span>
-          </el-menu-item>
-        </el-submenu>
-        <el-submenu index="sign">
-          <template slot="title">
-            <icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>
-            <span>台账管理</span>
-          </template>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'railway' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">铁路集装箱</span>
-          </el-menu-item>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'importedOre' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">进口矿</span>
-          </el-menu-item>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'importedOre' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">喷吹煤</span>
-          </el-menu-item>
-          <el-menu-item index="demo-echarts" @click="$router.push({ name: 'sinterCoal' })">
-            <icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>
-            <span slot="title">烧结煤</span>
-          </el-menu-item>
-        </el-submenu>
-        <el-submenu index="organ" >
-          <template slot="title">
-            <icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>
-            <span>汇总表</span>
-          </template>
-        </el-submenu>
+        <!--<el-submenu index="demo">-->
+          <!--<template slot="title">-->
+            <!--<icon-svg name="shoucang" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span>demo</span>-->
+          <!--</template>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'demo-echarts' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">echarts</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-ueditor" @click="$router.push({ name: 'demo-ueditor' })">-->
+            <!--<icon-svg name="editor" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">ueditor</span>-->
+          <!--</el-menu-item>-->
+        <!--</el-submenu>-->
+        <!--<el-submenu index="sign">-->
+          <!--<template slot="title">-->
+            <!--<icon-svg name="log" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span>台账管理</span>-->
+          <!--</template>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'railway' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">铁路集装箱</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'importedOre' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">进口矿</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'importedOre' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">喷吹煤</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'sinterCoal' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">烧结煤</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'coke' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">焦炭</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'scrapIron' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">外购废铁</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'limestone' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">灰石</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'waterSlag' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">水渣</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'steelSlag' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">钢渣</span>-->
+          <!--</el-menu-item>-->
+          <!--<el-menu-item index="demo-echarts" @click="$router.push({ name: 'steel' })">-->
+            <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+            <!--<span slot="title">钢材</span>-->
+          <!--</el-menu-item>-->
+        <!--</el-submenu>-->
+        <!--<el-menu-item index="home" @click="$router.push({ name: 'summary' })">-->
+          <!--<icon-svg name="tubiao" class="site-sidebar__menu-icon"></icon-svg>-->
+          <!--<span slot="title">汇总表</span>-->
+        <!--</el-menu-item>-->
         <sub-menu
           v-for="menu in menuList"
           :key="menu.menuId"

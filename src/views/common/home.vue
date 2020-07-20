@@ -1,6 +1,6 @@
 <template>
   <div class="mod-home">
-    <h1>欢迎使用数据播报系统后台管理</h1>
+    <h1>欢迎使用清洁运输系统后台管理</h1>
   </div>
 </template>
 

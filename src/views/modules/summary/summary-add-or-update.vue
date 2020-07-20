@@ -4,96 +4,22 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="车号">
-        <el-input v-model="dataForm.dataAmount" placeholder="车号"></el-input>
-      </el-form-item>
-      <el-form-item label="入厂时间">
-        <el-date-picker
-          v-model="dataForm.dataTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="过重时间">
-        <el-date-picker
-          v-model="dataForm.dataTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="物料编码">
-        <el-input v-model="dataForm.dataAmount" placeholder="物料编码"></el-input>
+      <el-form-item label="物料大类">
+        <el-input v-model="dataForm.dataAmount" placeholder="物料大类"></el-input>
       </el-form-item>
       <el-form-item label="物料名称">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.dataAmount" placeholder="物料名称"></el-input>
       </el-form-item>
-      <el-form-item label="毛重">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="毛重"></el-input>
+      <el-form-item label="运输方式">
+        <el-input v-model="dataForm.effectiveData" placeholder="运输方式"></el-input>
       </el-form-item>
-      <el-form-item label="皮重">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="皮重"></el-input>
-      </el-form-item>
-      <el-form-item label="净重">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="净重"></el-input>
-      </el-form-item>
-      <el-form-item label="发货工厂编号">
-        <el-input v-model="dataForm.dataAmount" placeholder="发货工厂编号"></el-input>
-      </el-form-item>
-      <el-form-item label="发货工厂描述">
-        <el-input v-model="dataForm.effectiveData" placeholder="发货工厂描述"></el-input>
-      </el-form-item>
-      <el-form-item label="发出库存地">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="发出库存地"></el-input>
-      </el-form-item>
-      <el-form-item label="计量单号">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="计量单号"></el-input>
-      </el-form-item>
-      <el-form-item label="联单号">
-        <el-input v-model="dataForm.dataAmount" placeholder="联单号"></el-input>
-      </el-form-item>
-      <el-form-item label="收货工厂编码">
-        <el-input v-model="dataForm.effectiveData" placeholder="收货工厂编码"></el-input>
-      </el-form-item>
-      <el-form-item label="收货工厂描述">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="收货工厂描述"></el-input>
-      </el-form-item>
-      <el-form-item label="接受库存地">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="接受库存地"></el-input>
-      </el-form-item>
-      <el-form-item label="回皮时间">
-        <el-date-picker
-          v-model="dataForm.dataTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="出厂时间">
-        <el-date-picker
-          v-model="dataForm.dataTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="车辆排放标准">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="车辆排放标准"></el-input>
-      </el-form-item>
-      <el-form-item label="入厂出厂照片">
-        <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
-
+      <el-form-item label="清洁运输占比(%)">
+        <el-input v-model="dataForm.todayConsumeMoney" placeholder="运输量(万t)"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
-      <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
+      <!--<el-button type="primary" @click="dataFormSubmit()">确定</el-button>-->
     </span>
   </el-dialog>
 </template>

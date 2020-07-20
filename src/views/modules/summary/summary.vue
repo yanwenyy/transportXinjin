@@ -1,23 +1,39 @@
 <template>
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item label="选择时间:">
-        <el-date-picker
-          v-model="dataForm.startTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="车牌号:">
-        <el-input v-model="dataForm.name" placeholder="车牌号" clearable></el-input>
+      <el-form-item label="物料分类:">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="物料名称:">
         <el-input v-model="dataForm.name" placeholder="物料名称" clearable></el-input>
       </el-form-item>
+      <el-form-item label="运输方式:">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="月份:">
+        <el-date-picker
+          v-model="dataForm.month"
+          type="month"
+          placeholder="选择月">
+        </el-date-picker>
+      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <!--<el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
@@ -43,123 +59,29 @@
       <el-table-column
         prop="agencyName"
         align="center"
-        label="车号">
+        label="物料大类">
       </el-table-column>
       <el-table-column
         prop="agencyName"
-        align="center"
-        label="集装箱号">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
-        header-align="center"
-        align="center"
-        label="入厂时间">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="过重时间">
-      </el-table-column>
-      <el-table-column
-        prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="物料编码">
-      </el-table-column>
-      <el-table-column
-        prop="effective"
-        header-align="center"
         align="center"
         label="物料名称">
-        <!--<template slot-scope="scope">-->
-        <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
-        <!--</template>-->
       </el-table-column>
       <el-table-column
         prop="agencyName"
         align="center"
-        label="毛重">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="皮重">
+        label="运输方式">
       </el-table-column>
       <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
-        label="净重">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="发货工厂编号">
+        label="运输量(万t)">
       </el-table-column>
       <el-table-column
         prop="todayConsumeMoney"
         header-align="center"
         align="center"
-        label="发货工厂描述">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="发出库存地">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="计量单号">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
-        header-align="center"
-        align="center"
-        label="联单号">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="收货工厂编码">
-      </el-table-column>
-      <el-table-column
-        prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="收货工厂描述">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
-        align="center"
-        label="接受库存地">
-      </el-table-column>
-      <el-table-column
-        prop=""
-        align="center"
-        label="回皮时间">
-      </el-table-column>
-      <el-table-column
-        prop="dataAmount"
-        header-align="center"
-        align="center"
-        label="出厂时间">
-      </el-table-column>
-      <el-table-column
-        prop="effectiveData"
-        header-align="center"
-        align="center"
-        label="车辆排放标准">
-      </el-table-column>
-      <el-table-column
-        prop="todayConsumeMoney"
-        header-align="center"
-        align="center"
-        label="入厂出厂照片">
+        label="清洁运输占比(%)">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -168,8 +90,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('biz:pdbaidudate:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">查看</el-button>
+          <!--<el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -188,13 +110,14 @@
 </template>
 
 <script>
-  import AddOrUpdate from './railway-add-or-update'
+  import AddOrUpdate from './summary-add-or-update'
   export default {
     data () {
       return {
         dataForm: {
           startTime: '',
           endTime: '',
+          month:''
         },
         dataList: [],
         pageIndex: 1,

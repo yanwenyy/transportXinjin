@@ -7,9 +7,6 @@
       <el-form-item label="车号">
         <el-input v-model="dataForm.dataAmount" placeholder="车号"></el-input>
       </el-form-item>
-      <el-form-item label="集装箱号">
-        <el-input v-model="dataForm.dataAmount" placeholder="集装箱号"></el-input>
-      </el-form-item>
       <el-form-item label="入厂时间">
         <el-date-picker
           v-model="dataForm.dataTime"
