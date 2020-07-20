@@ -37,14 +37,10 @@ const mainRoutes = {
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
     { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } },
-    // { path: '/sign', component: _import('modules/dataManage/sign'), name: 'sign', meta: { title: '报名成单数据', isTab: true } },
-    // { path: '/refund', component: _import('modules/dataManage/refund'), name: 'refund', meta: { title: '退费监控', isTab: true } },
-    // { path: '/getData', component: _import('modules/dataManage/getData'), name: 'getData', meta: { title: '获取数据', isTab: true } },
-    // { path: '/baiduChannel', component: _import('modules/dataManage/baiduChannel'), name: 'baiduChannel', meta: { title: '百度渠道获取数据', isTab: true } },
-    // { path: '/studentPlan', component: _import('modules/dataManage/studentPlan'), name: 'studentPlan', meta: { title: '招生目标', isTab: true } },
-    // { path: '/courseData', component: _import('modules/dataManage/courseData'), name: 'courseData', meta: { title: '文化课报名数据', isTab: true } },
-    // { path: '/organ', component: _import('modules/organManage/organ'), name: 'organ', meta: { title: '机构管理', isTab: true } },
-    // { path: '/member', component: _import('modules/organManage/member'), name: 'member', meta: { title: '成员管理', isTab: true } }
+    { path: '/railway', component: _import('modules/book/railway'), name: 'railway', meta: { title: '铁路集装箱', isTab: true } },
+    { path: '/importedOre', component: _import('modules/book/importedOre'), name: 'importedOre', meta: { title: '进口矿', isTab: true } },
+    { path: '/injectionCoal', component: _import('modules/book/injectionCoal'), name: 'injectionCoal', meta: { title: '喷吹煤', isTab: true } },
+    { path: '/sinterCoal', component: _import('modules/book/sinterCoal'), name: 'sinterCoal', meta: { title: '烧结煤', isTab: true } },
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')
