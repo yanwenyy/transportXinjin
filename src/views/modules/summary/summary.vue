@@ -24,11 +24,11 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="月份:">
+      <el-form-item label="选择日期:">
         <el-date-picker
           v-model="dataForm.month"
-          type="month"
-          placeholder="选择月">
+          type="date"
+          placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item>

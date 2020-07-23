@@ -75,8 +75,11 @@ import {
   Loading,
   MessageBox,
   Message,
-  Notification
+  Notification,
+  Image,
 } from 'element-ui'
+
+import  'element-ui/lib/theme-chalk/index.css'
 
 Vue.use(Pagination)
 Vue.use(Dialog)
@@ -141,6 +144,7 @@ Vue.use(Header)
 Vue.use(Aside)
 Vue.use(Main)
 Vue.use(Footer)
+Vue.use(Image)
 
 Vue.use(Loading.directive)
 

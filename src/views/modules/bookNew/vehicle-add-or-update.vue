@@ -1,10 +1,26 @@
 <template>
   <el-dialog
-    :title="!dataForm.id ? '新增' : '修改'"
+    :title="!dataForm.id ? '新增' :look=='look'?'查看': '修改'"
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="进厂时间">
+        <el-date-picker
+          v-model="dataForm.dataTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="进厂过磅时间">
+        <el-date-picker
+          v-model="dataForm.dataTime"
+          type="date"
+          value-format="yyyy-MM-dd"
+          placeholder="请选择时间">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="出厂过磅时间">
         <el-date-picker
           v-model="dataForm.dataTime"
           type="date"
@@ -21,12 +37,27 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="照片">
+        <!--<div class="inline-block box-img" v-for="item in srcList">-->
+          <!--<el-image class="look-img"-->
+                    <!--:src="item"-->
+                    <!--:preview-src-list="srcList">-->
+          <!--</el-image>-->
+          <!--<i class="el-icon-error box-img-del"></i>-->
+        <!--</div>-->
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           list-type="picture-card"
-          :on-remove="handleRemove">
+          :auto-upload="false"
+          :on-change="imgChange"
+          :on-remove="handleRemove" >
           <i class="el-icon-plus"></i>
         </el-upload>
+      </el-form-item>
+      <el-form-item label="门岗名称">
+        <el-input v-model="dataForm.effectiveData" placeholder="门岗名称"></el-input>
+      </el-form-item>
+      <el-form-item label="磅房名称">
+        <el-input v-model="dataForm.effectiveData" placeholder="磅房名称"></el-input>
       </el-form-item>
       <el-form-item label="车牌号">
         <el-input v-model="dataForm.effectiveData" placeholder="车牌号"></el-input>
@@ -45,6 +76,42 @@
       <el-form-item label="发动机号码">
         <el-input v-model="dataForm.todayConsumeMoney" placeholder="发动机号码"></el-input>
       </el-form-item>
+      <el-form-item label="燃油种类">
+        <el-select v-model="value" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="随车清单">
+        <!--<el-image v-for="item in scjd"-->
+                  <!--class="look-img"-->
+                  <!--:src="item"-->
+                  <!--:preview-src-list="scjd">-->
+        <!--</el-image>-->
+        <el-upload
+          action=""
+          list-type="picture-card"
+          :auto-upload="false"
+          :on-change="imgChange"
+          :on-remove="handleRemove" >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
+      <el-form-item label="行驶证">
+        <el-upload
+          action=""
+          list-type="picture-card"
+          :auto-upload="false"
+          :on-change="imgChange"
+          :on-remove="handleRemove" >
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </el-form-item>
       <el-form-item label="排放阶段">
         <el-select v-model="value" placeholder="请选择">
           <el-option
@@ -55,33 +122,38 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="随车清单">
-        <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+      <el-form-item label="供应商">
+        <el-input v-model="dataForm.todayConsumeMoney" placeholder="供应商"></el-input>
       </el-form-item>
-      <el-form-item label="行驶证">
-        <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+      <el-form-item label="物料编码">
+        <el-input v-model="dataForm.dataAmount" placeholder="物料编码"></el-input>
       </el-form-item>
-      <el-form-item label="运输货物名称">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="运输货物名称"></el-input>
+      <el-form-item label="物料名称">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
       </el-form-item>
-      <el-form-item label="运输量(吨)">
-        <el-input v-model="dataForm.dataAmount" placeholder="运输量(吨)"></el-input>
+      <el-form-item label="计量单号">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
       </el-form-item>
-      <el-form-item label="车队名称">
-        <el-input v-model="dataForm.effectiveData" placeholder="车队名称"></el-input>
+      <el-form-item label="毛重">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="皮重">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="净重">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="集装箱号">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="运输方式（铁路/公路）">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="运输单位">
+        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
       </el-form-item>
     </el-form>
-    <span slot="footer" class="dialog-footer">
+    <span v-if="look!='look'" slot="footer" class="dialog-footer">
       <el-button @click="visible = false">取消</el-button>
       <el-button type="primary" @click="dataFormSubmit()">确定</el-button>
     </span>
@@ -89,7 +161,8 @@
 </template>
 
 <script>
-  import { isInteger } from '@/utils/validate'
+  import { isInteger } from '@/utils/validate';
+  import {getBase64} from '@/utils'
   export default {
     data () {
       var validateInteger = (rule, value, callback) => {
@@ -111,9 +184,11 @@
         }
       };
       return {
+        scjd:[],
         visible: false,
         dialogImageUrl: '',
         dialogVisible: false,
+        look:'',
         dataForm: {
           id: 0,
           dataTime: '',
@@ -137,13 +212,13 @@
           value: '选项5',
           label: '国 4:4'
         }, {
-          value: '选项5',
+          value: '选项6',
           label: '国 5:5'
         }, {
-          value: '选项5',
+          value: '选项7',
           label: '国 6:6'
         }, {
-          value: '选项5',
+          value: '选项8',
           label: '电动:D'
         }],
         value: '',
@@ -164,8 +239,10 @@
       }
     },
     methods: {
-      init (id) {
+      init (id,look) {
+        console.log(id)
         this.dataForm.id = id||0;
+        this.look=look;
         this.visible = true;
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields();
@@ -219,10 +296,19 @@
       },
       handleRemove(file, fileList) {
         console.log(file, fileList);
+        getBase64(file.raw).then(res => {
+          this.scjd.remove(res);
+          console.log(this.scjd)
+        })
       },
       handlePictureCardPreview(file) {
         this.dialogImageUrl = file.url;
         this.dialogVisible = true;
+      },
+      imgChange(file, fileList){
+        getBase64(file.raw).then(res => {
+          this.scjd.push(res);
+        })
       }
     }
   }
@@ -233,6 +319,11 @@
   }
   >>> .el-input{
     width: 90%;
+  }
+  >>>.look-img{
+    width: 100px;
+    height: 100px;
+    margin-right: 10px;
   }
 </style>
 

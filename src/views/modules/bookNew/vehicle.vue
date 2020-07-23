@@ -59,17 +59,40 @@
         label="进厂时间">
       </el-table-column>
       <el-table-column
+        prop="agencyName"
+        align="center"
+        label="进厂过磅时间">
+      </el-table-column>
+      <el-table-column
+        prop="agencyName"
+        align="center"
+        label="出厂过磅时间">
+      </el-table-column>
+      <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
         label="出厂时间">
       </el-table-column>
       <el-table-column
-        prop="effectiveData"
         header-align="center"
         align="center"
         label="照片">
-        <img class="table-list-img" src="" alt="">
+        <template slot-scope="scope">
+          <img class="table-list-img" :src="url" alt="">
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="门岗名称">
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="磅房名称">
       </el-table-column>
       <el-table-column
         prop="todayConsumeMoney"
@@ -97,10 +120,9 @@
         label="发动机号码">
       </el-table-column>
       <el-table-column
-        prop="dataAmount"
-        header-align="center"
+        prop=""
         align="center"
-        label="排放阶段">
+        label="燃油种类">
       </el-table-column>
       <el-table-column
         prop="effectiveData"
@@ -115,20 +137,65 @@
         label="行驶证">
       </el-table-column>
       <el-table-column
+        prop="dataAmount"
+        header-align="center"
+        align="center"
+        label="排放标准">
+      </el-table-column>
+      <el-table-column
         prop="agencyName"
         align="center"
-        label="运输货物名称">
+        label="供应商">
+      </el-table-column>
+      <el-table-column
+        prop="agencyName"
+        align="center"
+        label="物料编码">
+      </el-table-column>
+      <el-table-column
+        prop="agencyName"
+        align="center"
+        label="物料名称">
+      </el-table-column>
+      <el-table-column
+        prop="agencyName"
+        align="center"
+        label="计量单号">
       </el-table-column>
       <el-table-column
         prop=""
         align="center"
-        label="运输量(吨)">
+        label="毛重">
       </el-table-column>
       <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
-        label="车队名称">
+        label="皮重">
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="净重">
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="集装箱号">
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="运输方式（铁路/公路）">
+      </el-table-column>
+      <el-table-column
+        prop="effectiveData"
+        header-align="center"
+        align="center"
+        label="运输单位">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -137,8 +204,9 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('biz:pdbaidudate:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id,'look')">查看</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -165,6 +233,7 @@
           startTime: '',
           endTime: '',
         },
+        url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -195,9 +264,9 @@
             'endTime': this.dataForm.endTime
           })
         }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+          if (data && data.code === 0) {
+            this.dataList = data.page.list
+            this.totalPage = data.page.totalCount
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -221,10 +290,10 @@
         this.dataListSelections = val
       },
       // 新增 / 修改
-      addOrUpdateHandle (id) {
+      addOrUpdateHandle (id,look) {
         this.addOrUpdateVisible = true
         this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+          this.$refs.addOrUpdate.init(id,look)
         })
       },
       // 删除

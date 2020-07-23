@@ -104,13 +104,13 @@
           value: '选项5',
           label: '国 4:4'
         }, {
-          value: '选项5',
+          value: '选项6',
           label: '国 5:5'
         }, {
-          value: '选项5',
+          value: '选项7',
           label: '国 6:6'
         }, {
-          value: '选项5',
+          value: '选项8',
           label: '电动:D'
         }],
         value: '',

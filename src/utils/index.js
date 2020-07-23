@@ -56,3 +56,34 @@ export function clearLoginInfo () {
   store.commit('resetStore')
   router.options.isAddDynamicMenuRoutes = false
 }
+
+// 图片转base64
+export function getBase64(file) {
+  return new Promise(function (resolve, reject) {
+    let reader = new FileReader()
+    let imgResult = ''
+    reader.readAsDataURL(file)
+    reader.onload = function () {
+      imgResult = reader.result
+    }
+    reader.onerror = function (error) {
+      reject(error)
+    }
+    reader.onloadend = function () {
+      resolve(imgResult)
+    }
+  })
+}
+
+Array.prototype.indexOf = function(val) {
+  for (var i = 0; i < this.length; i++) {
+    if (this[i] == val) return i;
+  }
+  return -1;
+};
+Array.prototype.remove = function(val) {
+  var index = this.indexOf(val);
+  if (index > -1) {
+    this.splice(index, 1);
+  }
+};
