@@ -14,21 +14,18 @@
       <el-form-item label="物料名称:">
         <el-input v-model="dataForm.name" placeholder="物料名称" clearable></el-input>
       </el-form-item>
-      <el-form-item label="运输方式:">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
-      <el-form-item label="选择日期:">
+      <el-form-item label="月份:">
         <el-date-picker
           v-model="dataForm.month"
+          type="month"
+          placeholder="选择月份" @change="dataForm.date=''">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item label="日期:">
+        <el-date-picker
+          v-model="dataForm.date"
           type="date"
-          placeholder="选择日期">
+          placeholder="选择日期"  @change="dataForm.month=''">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -67,15 +64,10 @@
         label="物料名称">
       </el-table-column>
       <el-table-column
-        prop="agencyName"
-        align="center"
-        label="运输方式">
-      </el-table-column>
-      <el-table-column
         prop="dataAmount"
         header-align="center"
         align="center"
-        label="运输量(万t)">
+        label="汽车运输量(万t)">
       </el-table-column>
       <el-table-column
         prop="todayConsumeMoney"
@@ -117,7 +109,8 @@
         dataForm: {
           startTime: '',
           endTime: '',
-          month:''
+          month:'',
+          date:'',
         },
         dataList: [],
         pageIndex: 1,
@@ -162,8 +155,7 @@
     methods: {
       // 获取数据列表
       getDataList () {
-        console.log(this.value1)
-        this.dataListLoading = true
+        this.dataListLoading = true;
         this.$http({
           url: this.$http.adornUrl('/biz/pdbaidudata/list'),
           method: 'get',
