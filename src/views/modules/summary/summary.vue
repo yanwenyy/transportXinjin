@@ -1,31 +1,23 @@
 <template>
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item label="物料分类:">
-        <el-select v-model="value" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="物料名称:">
-        <el-input v-model="dataForm.name" placeholder="物料名称" clearable></el-input>
+        <el-input v-model="dataForm.materialsName" placeholder="物料名称" clearable></el-input>
       </el-form-item>
       <el-form-item label="月份:">
         <el-date-picker
-          v-model="dataForm.month"
+          v-model="dataForm.monthTime"
+          value-format="yyyy-MM"
           type="month"
-          placeholder="选择月份" @change="dataForm.date=''">
+          placeholder="选择月份" @change="dataForm.dayTime=''">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="日期:">
         <el-date-picker
-          v-model="dataForm.date"
+          v-model="dataForm.dayTime"
+          value-format="yyyy-MM-dd"
           type="date"
-          placeholder="选择日期"  @change="dataForm.month=''">
+          placeholder="选择日期"  @change="dataForm.monthTime=''">
         </el-date-picker>
       </el-form-item>
       <el-form-item>
@@ -47,33 +39,44 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        type="index"
         header-align="center"
         align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="agencyName"
-        align="center"
-        label="物料大类">
-      </el-table-column>
-      <el-table-column
-        prop="agencyName"
+        prop="materialsName"
         align="center"
         label="物料名称">
       </el-table-column>
       <el-table-column
-        prop="dataAmount"
+        prop="carWeigh"
         header-align="center"
         align="center"
         label="汽车运输量(万t)">
       </el-table-column>
       <el-table-column
-        prop="todayConsumeMoney"
+        header-align="center"
+        align="center"
+        label="火车运输量(万t)">
+        <template slot-scope="scope">
+          <span>{{scope.row.sumWeigh-scope.row.carWeigh}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="sumWeigh"
+        header-align="center"
+        align="center"
+        label="总运输量(万t)">
+      </el-table-column>
+      <el-table-column
         header-align="center"
         align="center"
         label="清洁运输占比(%)">
+        <template slot-scope="scope">
+          <span>{{((scope.row.sumWeigh-scope.row.carWeigh)/ scope.row.sumWeigh).toFixed(2)*100}}%</span>
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -82,7 +85,7 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">查看</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row)">查看</el-button>
           <!--<el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
         </template>
       </el-table-column>
@@ -107,10 +110,9 @@
     data () {
       return {
         dataForm: {
-          startTime: '',
-          endTime: '',
-          month:'',
-          date:'',
+          monthTime: '',
+          dayTime: '',
+          materialsName:''
         },
         dataList: [],
         pageIndex: 1,
@@ -119,24 +121,6 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        options: [{
-          value: '选项1',
-          label: '黄金糕'
-        }, {
-          value: '选项2',
-          label: '双皮奶'
-        }, {
-          value: '选项3',
-          label: '蚵仔煎'
-        }, {
-          value: '选项4',
-          label: '龙须面'
-        }, {
-          value: '选项5',
-          label: '北京烤鸭'
-        }],
-        value: '',
-        value1: '',
       }
     },
     components: {
@@ -144,32 +128,25 @@
     },
     activated () {
       this.getDataList();
-      this.$http({
-        url: this.$http.adornUrl('/biz/pdagency/down/list'),
-        method: 'get',
-        params: this.$http.adornParams()
-      }).then(({data}) => {
-        this.options = data && data.code === 200 ? data.data : []
-      })
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true;
         this.$http({
-          url: this.$http.adornUrl('/biz/pdbaidudata/list'),
+          url: this.$http.adornUrl('/jinding/sum/list'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'agencyId': this.dataForm.agencyId,
-            'startTime': this.dataForm.startTime,
-            'endTime': this.dataForm.endTime
+            'monthTime': this.dataForm.monthTime||'',
+            'dayTime': this.dataForm.dayTime||'',
+            'materialsName': this.dataForm.materialsName
           })
         }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+          if (data && data.code === 10000) {
+            this.dataList = data.data
+            this.totalPage = data.total
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -199,36 +176,6 @@
           this.$refs.addOrUpdate.init(id)
         })
       },
-      // 删除
-      deleteHandle (id) {
-        var userIds = id ? [id] : this.dataListSelections.map(item => {
-          return item.userId
-        })
-        this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
-          confirmButtonText: '确定',
-          cancelButtonText: '取消',
-          type: 'warning'
-        }).then(() => {
-          this.$http({
-            url: this.$http.adornUrl('/biz/pdbaidudata/delete'),
-            method: 'post',
-            data: this.$http.adornData(userIds, false)
-          }).then(({data}) => {
-            if (data && data.code === 200) {
-              this.$message({
-                message: '操作成功',
-                type: 'success',
-                duration: 1500,
-                onClose: () => {
-                  this.getDataList()
-                }
-              })
-            } else {
-              this.$message.error(data.msg)
-            }
-          })
-        }).catch(() => {})
-      }
     }
   }
 </script>

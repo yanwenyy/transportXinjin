@@ -3,21 +3,26 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="生产日期:">
         <el-date-picker
-          v-model="dataForm.startTime"
+          v-model="dataForm.produceTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="环保登记编码">
-        <el-input v-model="dataForm.name" placeholder="环保登记编码" clearable></el-input>
+        <el-input v-model="dataForm.evnProNum" placeholder="环保登记编码" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-upload
           class="inline-block"
-          action="https://jsonplaceholder.typicode.com/posts/">
+          :headers="{'token':token}"
+          :action="this.$http.adornUrl('/biz/offroad/import/road')"
+          :on-success="handleChange"
+          :on-error="handleChange"
+          :show-file-list="false"
+          >
           <el-button type="warning">批量导入</el-button>
         </el-upload>
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
@@ -36,37 +41,37 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        type="index"
         header-align="center"
         align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="agencyName"
+        prop="evnProNum"
         align="center"
         label="环保登记编码">
       </el-table-column>
       <el-table-column
-        prop="dataAmount"
+        prop="produceTime"
         header-align="center"
         align="center"
         label="生产日期">
       </el-table-column>
       <el-table-column
-        prop="effectiveData"
+        prop="emission"
         header-align="center"
         align="center"
         label="排放阶段">
       </el-table-column>
       <el-table-column
-        prop="todayConsumeMoney"
+        prop="emissionNum"
         header-align="center"
         align="center"
         label="器械环保代码">
       </el-table-column>
       <el-table-column
-        prop="effective"
+        prop="engineNum"
         header-align="center"
         align="center"
         label="发动机铭牌">
@@ -81,8 +86,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('biz:pdbaidudate:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -106,9 +111,10 @@
     data () {
       return {
         dataForm: {
-          startTime: '',
-          endTime: '',
+          produceTime: '',
+          evnProNum: '',
         },
+        token:'',
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -123,25 +129,25 @@
     },
     activated () {
       this.getDataList();
+      this.token=this.$cookie.get('token')
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/biz/pdbaidudata/list'),
+          url: this.$http.adornUrl('/jinding/offroad/list'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'agencyId': this.dataForm.agencyId,
-            'startTime': this.dataForm.startTime,
-            'endTime': this.dataForm.endTime
+            'produceTime': this.dataForm.produceTime||'',
+            'evnProNum': this.dataForm.evnProNum
           })
         }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+          if (data && data.code === 10000) {
+            this.dataList = data.data
+            this.totalPage = data.total
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -182,7 +188,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/biz/pdbaidudata/delete'),
+            url: this.$http.adornUrl('/biz/offroad/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {
@@ -200,6 +206,21 @@
             }
           })
         }).catch(() => {})
+      },
+      //导入
+      handleChange(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '导入成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getDataList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       }
     }
   }

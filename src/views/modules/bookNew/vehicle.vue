@@ -254,7 +254,7 @@
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl('/biz/pdbaidudata/list'),
+          url: this.$http.adornUrl(''),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,

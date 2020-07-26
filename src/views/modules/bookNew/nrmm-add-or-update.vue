@@ -5,18 +5,18 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="环保登记编码">
-        <el-input v-model="dataForm.dataAmount" placeholder="环保登记编码"></el-input>
+        <el-input v-model="dataForm.evnProNum" placeholder="环保登记编码"></el-input>
       </el-form-item>
       <el-form-item label="生产日期">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.produceTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="排放阶段">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="dataForm.emission" placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -26,10 +26,10 @@
         </el-select>
       </el-form-item>
       <el-form-item label="器械环保代码">
-        <el-input v-model="dataForm.dataAmount" placeholder="器械环保代码"></el-input>
+        <el-input v-model="dataForm.emissionNum" placeholder="器械环保代码"></el-input>
       </el-form-item>
       <el-form-item label="发动机铭牌">
-        <el-input v-model="dataForm.dataAmount" placeholder="发动机铭牌"></el-input>
+        <el-input v-model="dataForm.engineNum" placeholder="发动机铭牌"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -67,34 +67,35 @@
         dialogVisible: false,
         dataForm: {
           id: 0,
-          dataTime: '',
-          dataAmount: '',
-          effectiveData: '',
-          todayConsumeMoney: ''
+          evnProNum: '',
+          produceTime: '',
+          emission: '',
+          emissionNum: '',
+          engineNum:''
         },
         options: [{
-          value: '选项1',
+          value: '国 0:0',
           label: '国 0:0'
         }, {
-          value: '选项2',
+          value: '国 1:1',
           label: '国 1:1'
         }, {
-          value: '选项3',
+          value: '国 2:2',
           label: '国 2:2'
         }, {
-          value: '选项4',
+          value: '国 3:3',
           label: '国 3:3'
         }, {
-          value: '选项5',
+          value: '国 4:4',
           label: '国 4:4'
         }, {
-          value: '选项6',
+          value: '国 5:5',
           label: '国 5:5'
         }, {
-          value: '选项7',
+          value: '国 6:6',
           label: '国 6:6'
         }, {
-          value: '选项8',
+          value: '电动:D',
           label: '电动:D'
         }],
         value: '',
@@ -114,6 +115,13 @@
         }
       }
     },
+    created(){
+      this.dataForm.evnProNum = "";
+      this.dataForm.produceTime = "";
+      this.dataForm.emission = "";
+      this.dataForm.emissionNum = "";
+      this.dataForm.engineNum = "";
+      },
     methods: {
       init (id) {
         this.dataForm.id = id||0;
@@ -122,17 +130,24 @@
           this.$refs['dataForm'].resetFields();
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/offroad/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dataTime = data.data.dataTime;
-                this.dataForm.dataAmount = data.data.dataAmount;
-                this.dataForm.effectiveData = data.data.effectiveData;
-                this.dataForm.todayConsumeMoney = data.data.todayConsumeMoney;
+                this.dataForm.evnProNum = data.data.evnProNum;
+                this.dataForm.produceTime = data.data.produceTime;
+                this.dataForm.emission = data.data.emission;
+                this.dataForm.emissionNum = data.data.emissionNum;
+                this.dataForm.engineNum = data.data.engineNum;
               }
             })
+          }else{
+            this.dataForm.evnProNum = "";
+            this.dataForm.produceTime = "";
+            this.dataForm.emission = "";
+            this.dataForm.emissionNum = "";
+            this.dataForm.engineNum = "";
           }
         })
       },
@@ -141,14 +156,15 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/offroad/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'dataTime': this.dataForm.dataTime+" 00:00:00",
-                'dataAmount': this.dataForm.dataAmount,
-                'effectiveData': this.dataForm.effectiveData,
-                'todayConsumeMoney': this.dataForm.todayConsumeMoney
+                'produceTime': this.dataForm.produceTime+" 00:00:00",
+                'evnProNum': this.dataForm.evnProNum,
+                'emission': this.dataForm.emission,
+                'emissionNum': this.dataForm.emissionNum,
+                'engineNum': this.dataForm.engineNum
               })
             }).then(({data}) => {
               if (data && data.code ===200) {
