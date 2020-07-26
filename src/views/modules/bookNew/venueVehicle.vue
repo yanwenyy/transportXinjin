@@ -3,14 +3,14 @@
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="注册日期:">
         <el-date-picker
-          v-model="dataForm.startTime"
+          v-model="dataForm.registTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="环保登记编码或内部管理号牌">
-        <el-input v-model="dataForm.name" placeholder="环保登记编码或内部管理号牌" clearable></el-input>
+        <el-input v-model="dataForm.evnCarNum" placeholder="环保登记编码或内部管理号牌" clearable></el-input>
       </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
@@ -36,53 +36,54 @@
         width="50">
       </el-table-column>
       <el-table-column
-        prop="id"
+        type="index"
         header-align="center"
         align="center"
         width="80"
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="agencyName"
+        prop="evnCarNum"
         align="center"
         label="环保登记编码或内部管理号牌">
       </el-table-column>
       <el-table-column
-        prop="dataAmount"
+        prop="registTime"
         header-align="center"
         align="center"
         label="注册日期">
       </el-table-column>
       <el-table-column
-        prop="effectiveData"
+        prop="vehicleNum"
         header-align="center"
         align="center"
         label="车辆识别代号(VIN)">
       </el-table-column>
       <el-table-column
-        prop="todayConsumeMoney"
+        prop="engineNum"
         header-align="center"
         align="center"
         label="发动机号码">
       </el-table-column>
       <el-table-column
-        prop="effective"
+        prop="emissionStand"
         header-align="center"
         align="center"
         label="排放阶段">
-        <!--<template slot-scope="scope">-->
-        <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
-        <!--</template>-->
       </el-table-column>
       <el-table-column
-        prop="agencyName"
         align="center"
         label="随车清单">
+        <template slot-scope="scope">
+          <img class="table-list-img" :src="imgUrlfront+scope.row.carCheckList" alt="">
+        </template>
       </el-table-column>
       <el-table-column
-        prop=""
         align="center"
         label="行驶证">
+        <template slot-scope="scope">
+          <img class="table-list-img" :src="imgUrlfront+scope.row.drivinglLicense" alt="">
+        </template>
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -91,8 +92,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="isAuth('biz:pdbaidudate:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -116,9 +117,10 @@
     data () {
       return {
         dataForm: {
-          startTime: '',
-          endTime: '',
+          evnCarNum: '',
+          registTime: '',
         },
+        imgUrlfront:'',
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -133,25 +135,25 @@
     },
     activated () {
       this.getDataList();
+      this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true
         this.$http({
-          url: this.$http.adornUrl(''),
+          url: this.$http.adornUrl('/jinding/factory/car/list'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'agencyId': this.dataForm.agencyId,
-            'startTime': this.dataForm.startTime,
-            'endTime': this.dataForm.endTime
+            'evnCarNum': this.dataForm.evnCarNum,
+            'registTime': this.dataForm.registTime||'',
           })
         }).then(({data}) => {
-          if (data && data.code === 200) {
-            this.dataList = data.data.list
-            this.totalPage = data.data.totalCount
+          if (data && data.code === 10000) {
+            this.dataList = data.data
+            this.totalPage = data.total
           } else {
             this.dataList = []
             this.totalPage = 0
@@ -192,7 +194,7 @@
           type: 'warning'
         }).then(() => {
           this.$http({
-            url: this.$http.adornUrl('/biz/pdbaidudata/delete'),
+            url: this.$http.adornUrl('/biz/factorycar/delete'),
             method: 'post',
             data: this.$http.adornData(userIds, false)
           }).then(({data}) => {

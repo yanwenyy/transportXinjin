@@ -5,24 +5,24 @@
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="环保登记编码或内部管理号牌">
-        <el-input v-model="dataForm.dataAmount" placeholder="环保登记编码或内部管理号牌"></el-input>
+        <el-input v-model="dataForm.evnCarNum" placeholder="环保登记编码或内部管理号牌"></el-input>
       </el-form-item>
       <el-form-item label="注册日期">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.registTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="车辆识别代号(VIN)">
-        <el-input v-model="dataForm.effectiveData" placeholder="车辆识别代号(VIN)"></el-input>
+        <el-input v-model="dataForm.vehicleNum" placeholder="车辆识别代号(VIN)"></el-input>
       </el-form-item>
       <el-form-item label="发动机号码">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="发动机号码"></el-input>
+        <el-input v-model="dataForm.engineNum" placeholder="发动机号码"></el-input>
       </el-form-item>
       <el-form-item label="排放阶段">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="dataForm.emissionStand" placeholder="请选择">
           <el-option
             v-for="item in options"
             :key="item.value"
@@ -32,20 +32,47 @@
         </el-select>
       </el-form-item>
       <el-form-item label="随车清单">
-        <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+        <div class="inline-block box-img" v-if="dataForm.carCheckList!=''">
+          <el-image class="look-img"
+          :src="imgUrlfront+dataForm.carCheckList">
+          </el-image>
+          <i class="el-icon-error box-img-del" @click="dataForm.carCheckList=''"></i>
+        </div>
+        <div class="inline-block box-img"  v-if="dataForm.carCheckList==''">
+          <el-upload
+            :show-file-list="!dataForm.id&& dataForm.carCheckList==''"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange"
+            :on-error="handleChange"
+            list-type="picture-card"
+            :on-remove="handleRemove"
+            :disabled="dataForm.carCheckList!=''">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="行驶证">
-        <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="picture-card"
-          :on-remove="handleRemove">
-          <i class="el-icon-plus"></i>
-        </el-upload>
+        <div class="inline-block box-img" v-if="dataForm.drivinglLicense!=''">
+          <el-image class="look-img"
+                    :src="imgUrlfront+dataForm.drivinglLicense" :preview-src-list="srcList">
+          </el-image>
+          <i class="el-icon-error box-img-del" @click="dataForm.drivinglLicense=''"></i>
+        </div>
+        <div class="inline-block box-img" v-if="dataForm.drivinglLicense==''">
+          <el-upload
+            :show-file-list="!dataForm.id && dataForm.drivinglLicense==''"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange2"
+            :on-error="handleChange2"
+            list-type="picture-card"
+            :on-remove="handleRemove2"
+            :disabled="dataForm.drivinglLicense!=''"
+            >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -83,34 +110,40 @@
         dialogVisible: false,
         dataForm: {
           id: 0,
-          dataTime: '',
-          dataAmount: '',
-          effectiveData: '',
-          todayConsumeMoney: ''
+          evnCarNum: '',
+          registTime: '',
+          vehicleNum: '',
+          engineNum: '',
+          emissionStand:'',
+          carCheckList:'',
+          drivinglLicense:''
         },
+        token:'',
+        imgUrlfront:'',
+        srcList: [],
         options: [{
-          value: '选项1',
+          value: '国 0:0',
           label: '国 0:0'
         }, {
-          value: '选项2',
+          value: '国 1:1',
           label: '国 1:1'
         }, {
-          value: '选项3',
+          value: '国 2:2',
           label: '国 2:2'
         }, {
-          value: '选项4',
+          value: '国 3:3',
           label: '国 3:3'
         }, {
-          value: '选项5',
+          value: '国 4:4',
           label: '国 4:4'
         }, {
-          value: '选项6',
+          value: '国 5:5',
           label: '国 5:5'
         }, {
-          value: '选项7',
+          value: '国 6:6',
           label: '国 6:6'
         }, {
-          value: '选项8',
+          value: '电动:D',
           label: '电动:D'
         }],
         value: '',
@@ -132,23 +165,39 @@
     },
     methods: {
       init (id) {
+        this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
+        this.token=this.$cookie.get('token');
         this.dataForm.id = id||0;
         this.visible = true;
         this.$nextTick(() => {
           this.$refs['dataForm'].resetFields();
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/factorycar/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dataTime = data.data.dataTime;
-                this.dataForm.dataAmount = data.data.dataAmount;
-                this.dataForm.effectiveData = data.data.effectiveData;
-                this.dataForm.todayConsumeMoney = data.data.todayConsumeMoney;
+                this.dataForm.evnCarNum = data.data.evnCarNum;
+                this.dataForm.registTime = data.data.registTime;
+                this.dataForm.vehicleNum = data.data.vehicleNum;
+                this.dataForm.engineNum = data.data.engineNum;
+                this.dataForm.emissionStand = data.data.emissionStand;
+                this.dataForm.carCheckList = data.data.carCheckList;
+                this.dataForm.drivinglLicense = data.data.drivinglLicense;
+                var list=[this.imgUrlfront+data.data.carCheckList,this.imgUrlfront+data.data.drivinglLicense];
+                this.srcList=list;
+                console.log(this.srcList)
               }
             })
+          }else{
+            this.dataForm.evnCarNum ='';
+            this.dataForm.registTime = '';
+            this.dataForm.vehicleNum = '';
+            this.dataForm.engineNum = '';
+            this.dataForm.emissionStand = '';
+            this.dataForm.carCheckList = '';
+            this.dataForm.drivinglLicense = '';
           }
         })
       },
@@ -157,14 +206,17 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/factorycar/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'dataTime': this.dataForm.dataTime+" 00:00:00",
-                'dataAmount': this.dataForm.dataAmount,
-                'effectiveData': this.dataForm.effectiveData,
-                'todayConsumeMoney': this.dataForm.todayConsumeMoney
+                'registTime': this.dataForm.registTime+" 00:00:00",
+                'evnCarNum': this.dataForm.evnCarNum,
+                'vehicleNum': this.dataForm.vehicleNum,
+                'engineNum': this.dataForm.engineNum,
+                'emissionStand': this.dataForm.emissionStand,
+                'carCheckList': this.dataForm.carCheckList,
+                'drivinglLicense': this.dataForm.drivinglLicense
               })
             }).then(({data}) => {
               if (data && data.code ===200) {
@@ -185,11 +237,47 @@
         })
       },
       handleRemove(file, fileList) {
-        console.log(file, fileList);
+        this.dataForm.carCheckList='';
       },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
+      //上传图片
+      handleChange(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.carCheckList=response.data;
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      handleRemove2(file, fileList) {
+        this.dataForm.drivinglLicense='';
+      },
+      //上传图片
+      handleChange2(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.drivinglLicense=response.data;
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      //最大限制
+      handExceed(){
+        this.$message.error('最多上传一张图片')
+      },
+      handExceed2(){
+        this.$message.error('最多上传一张图片')
       }
     }
   }
@@ -200,6 +288,14 @@
   }
   >>> .el-input{
     width: 90%;
+  }
+  >>>.look-img{
+    width: 148px;
+    height: 148px;
+    margin-right: 10px;
+  }
+  .box-img{
+    vertical-align: top;
   }
 </style>
 
