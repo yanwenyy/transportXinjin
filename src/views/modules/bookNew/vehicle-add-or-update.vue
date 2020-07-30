@@ -6,23 +6,23 @@
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
       <el-form-item label="进厂时间">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.enterTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="进厂过磅时间">
+      <el-form-item label="计量时间">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.weighTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="出厂过磅时间">
+      <el-form-item label="退卡时间">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.checkOutTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
@@ -30,56 +30,83 @@
       </el-form-item>
       <el-form-item label="出厂时间">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.outFactoryTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
-      <el-form-item label="照片">
-        <!--<div class="inline-block box-img" v-for="item in srcList">-->
-          <!--<el-image class="look-img"-->
-                    <!--:src="item"-->
-                    <!--:preview-src-list="srcList">-->
-          <!--</el-image>-->
-          <!--<i class="el-icon-error box-img-del"></i>-->
-        <!--</div>-->
-        <el-upload
-          action=""
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="imgChange"
-          :on-remove="handleRemove" >
-          <i class="el-icon-plus"></i>
-        </el-upload>
+      <el-form-item label="进厂照片">
+      <div class="inline-block box-img">
+        <div class="inline-block box-img" v-if="dataForm.enterImg&&dataForm.enterImg!=''">
+          <div  v-for="item in dataForm.enterImg" class="inline-block img-list-div">
+            <el-image class="look-img" title="点击查看大图"
+                      :src="item.indexOf('http')!=-1?item:imgUrlfront+item" :preview-src-list="srcList" >
+            </el-image>
+            <i class="el-icon-error box-img-del" @click="handleRemove3(item)"></i>
+          </div>
+        </div>
+        <div class="inline-block box-img">
+          <el-upload
+            :show-file-list="false"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange3"
+            :on-error="handleChange3"
+            list-type="picture-card">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
+      </div>
+    </el-form-item>
+      <el-form-item label="出厂照片">
+        <div class="inline-block box-img" v-if="dataForm.outImg&&dataForm.outImg!=''">
+          <div  v-for="item in dataForm.outImg" class="inline-block img-list-div">
+            <el-image class="look-img" title="点击查看大图"
+                      :src="item.indexOf('http')!=-1?item:imgUrlfront+item" :preview-src-list="srcList" >
+            </el-image>
+            <i class="el-icon-error box-img-del" @click="handleRemove4(item)"></i>
+          </div>
+        </div>
+        <div class="inline-block box-img">
+          <el-upload
+            :show-file-list="false"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange4"
+            :on-error="handleChange4"
+            list-type="picture-card">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="门岗名称">
-        <el-input v-model="dataForm.effectiveData" placeholder="门岗名称"></el-input>
+        <el-input v-model="dataForm.doorPostName" placeholder="门岗名称"></el-input>
       </el-form-item>
       <el-form-item label="磅房名称">
-        <el-input v-model="dataForm.effectiveData" placeholder="磅房名称"></el-input>
+        <el-input v-model="dataForm.poundRoom" placeholder="磅房名称"></el-input>
       </el-form-item>
       <el-form-item label="车牌号">
-        <el-input v-model="dataForm.effectiveData" placeholder="车牌号"></el-input>
+        <el-input v-model="dataForm.carNum" placeholder="车牌号"></el-input>
       </el-form-item>
       <el-form-item label="注册日期">
         <el-date-picker
-          v-model="dataForm.dataTime"
+          v-model="dataForm.registTime"
           type="date"
           value-format="yyyy-MM-dd"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="车辆识别代号(VIN)">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="车辆识别代号(VIN)"></el-input>
+        <el-input v-model="dataForm.vehicleNum" placeholder="车辆识别代号(VIN)"></el-input>
       </el-form-item>
       <el-form-item label="发动机号码">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="发动机号码"></el-input>
+        <el-input v-model="dataForm.engineNum" placeholder="发动机号码"></el-input>
       </el-form-item>
       <el-form-item label="燃油种类">
-        <el-select v-model="value" placeholder="请选择">
+        <el-select v-model="dataForm.fuelType" placeholder="请选择">
           <el-option
-            v-for="item in options"
+            v-for="item in ryzl"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -88,34 +115,52 @@
       </el-form-item>
 
       <el-form-item label="随车清单">
-        <!--<el-image v-for="item in scjd"-->
-                  <!--class="look-img"-->
-                  <!--:src="item"-->
-                  <!--:preview-src-list="scjd">-->
-        <!--</el-image>-->
-        <el-upload
-          action=""
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="imgChange"
-          :on-remove="handleRemove" >
-          <i class="el-icon-plus"></i>
-        </el-upload>
+        <div class="inline-block box-img" v-if="dataForm.carCheckList&&dataForm.carCheckList!=''">
+          <el-image class="look-img" title="点击查看大图"
+                    :src="dataForm.carCheckList.indexOf('http')!=-1?dataForm.carCheckList:imgUrlfront+dataForm.carCheckList" :preview-src-list="srcList" >
+          </el-image>
+          <i class="el-icon-error box-img-del" @click="dataForm.carCheckList=''"></i>
+        </div>
+        <div class="inline-block box-img"  v-if="dataForm.carCheckList==''||!dataForm.carCheckList">
+          <el-upload
+            :show-file-list="!dataForm.id&& dataForm.carCheckList==''"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange"
+            :on-error="handleChange"
+            list-type="picture-card"
+            :on-remove="handleRemove"
+            :disabled="dataForm.carCheckList!=''">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
       </el-form-item>
       <el-form-item label="行驶证">
-        <el-upload
-          action=""
-          list-type="picture-card"
-          :auto-upload="false"
-          :on-change="imgChange"
-          :on-remove="handleRemove" >
-          <i class="el-icon-plus"></i>
-        </el-upload>
+        <div class="inline-block box-img" v-if="dataForm.drivinglLicense&&dataForm.drivinglLicense!=''">
+          <el-image class="look-img" title="点击查看大图"
+                    :src="dataForm.drivinglLicense.indexOf('http')!=-1?dataForm.drivinglLicense:imgUrlfront+dataForm.drivinglLicense" :preview-src-list="srcList">
+          </el-image>
+          <i class="el-icon-error box-img-del" @click="dataForm.drivinglLicense=''"></i>
+        </div>
+        <div class="inline-block box-img" v-if="dataForm.drivinglLicense==''||!dataForm.drivinglLicense">
+          <el-upload
+            :show-file-list="!dataForm.id && dataForm.drivinglLicense==''"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange2"
+            :on-error="handleChange2"
+            list-type="picture-card"
+            :on-remove="handleRemove2"
+            :disabled="dataForm.drivinglLicense!=''"
+          >
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
       </el-form-item>
-      <el-form-item label="排放阶段">
-        <el-select v-model="value" placeholder="请选择">
+      <el-form-item label="排放标准">
+        <el-select v-model="dataForm.emissionStand" placeholder="请选择">
           <el-option
-            v-for="item in options"
+            v-for="item in pfbz"
             :key="item.value"
             :label="item.label"
             :value="item.value">
@@ -123,34 +168,41 @@
         </el-select>
       </el-form-item>
       <el-form-item label="供应商">
-        <el-input v-model="dataForm.todayConsumeMoney" placeholder="供应商"></el-input>
+        <el-input v-model="dataForm.clientName" placeholder="供应商"></el-input>
       </el-form-item>
       <el-form-item label="物料编码">
-        <el-input v-model="dataForm.dataAmount" placeholder="物料编码"></el-input>
+        <el-input v-model="dataForm.materialsNum" placeholder="物料编码"></el-input>
       </el-form-item>
       <el-form-item label="物料名称">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.materialsName" placeholder="物料名称"></el-input>
       </el-form-item>
       <el-form-item label="计量单号">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.measureNum" placeholder="计量单号"></el-input>
       </el-form-item>
       <el-form-item label="毛重">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.crossWeigh" placeholder="毛重"></el-input>
       </el-form-item>
       <el-form-item label="皮重">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.tareWeigh" placeholder="皮重"></el-input>
       </el-form-item>
       <el-form-item label="净重">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.netWeigh" placeholder="净重"></el-input>
       </el-form-item>
       <el-form-item label="集装箱号">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.containerNum" placeholder="集装箱号"></el-input>
       </el-form-item>
-      <el-form-item label="运输方式（铁路/公路）">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+      <el-form-item label="运输方式">
+        <el-select v-model="dataForm.tranType" placeholder="请选择">
+          <el-option
+            v-for="item in ysfs"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="运输单位">
-        <el-input v-model="dataForm.effectiveData" placeholder="物料名称"></el-input>
+        <el-input v-model="dataForm.transportUnit" placeholder="运输单位"></el-input>
       </el-form-item>
     </el-form>
     <span v-if="look!='look'" slot="footer" class="dialog-footer">
@@ -191,36 +243,90 @@
         look:'',
         dataForm: {
           id: 0,
-          dataTime: '',
-          dataAmount: '',
-          effectiveData: '',
-          todayConsumeMoney: ''
+          enterTime: '',
+          weighTime: '',
+          checkOutTime: '',
+          outFactoryTime: '',
+          enterImg: [],
+          outImg:[],
+          doorPostName: '',
+          poundRoom: '',
+          carNum: '',
+          registTime: '',
+          vehicleNum: '',
+          engineNum: '',
+          fuelType: '',
+          carCheckList: '',
+          drivinglLicense: '',
+          emissionStand: '',
+          clientName: '',
+          materialsNum: '',
+          materialsName: '',
+          measureNum: '',
+          crossWeigh: '',
+          tareWeigh: '',
+          netWeigh: '',
+          containerNum: '',
+          tranType: '',
+          transportUnit: '',
         },
-        options: [{
-          value: '选项1',
-          label: '国 0:0'
-        }, {
-          value: '选项2',
-          label: '国 1:1'
-        }, {
-          value: '选项3',
-          label: '国 2:2'
-        }, {
-          value: '选项4',
-          label: '国 3:3'
-        }, {
-          value: '选项5',
-          label: '国 4:4'
-        }, {
-          value: '选项6',
-          label: '国 5:5'
-        }, {
-          value: '选项7',
-          label: '国 6:6'
-        }, {
-          value: '选项8',
-          label: '电动:D'
-        }],
+        token:'',
+        imgUrlfront:'',
+        srcList: [],
+        ryzl:[
+          {
+            value: '柴油',
+            label: '柴油'
+          },
+          {
+            value: '天然气',
+            label: '天然气'
+          },
+          {
+            value: '纯电动',
+            label: '纯电动'
+          },
+          {
+            value: '油电混动',
+            label: '油电混动'
+          },
+        ],
+        pfbz: [
+          {
+            value: '国 0:0',
+            label: '国 0:0'
+          }, {
+            value: '国 1:1',
+            label: '国 1:1'
+          }, {
+            value: '国 2:2',
+            label: '国 2:2'
+          }, {
+            value: '国 3:3',
+            label: '国 3:3'
+          }, {
+            value: '国 4:4',
+            label: '国 4:4'
+          }, {
+            value: '国 5:5',
+            label: '国 5:5'
+          }, {
+            value: '国 6:6',
+            label: '国 6:6'
+          }, {
+            value: '电动:D',
+            label: '电动:D'
+          }],
+        ysfs:[
+          {
+            value: "0",
+            label: '铁路'
+          },
+          {
+            value:"1",
+            label: '公路'
+          }
+        ],
         value: '',
         dataRule: {
           dataTime: [
@@ -240,7 +346,8 @@
     },
     methods: {
       init (id,look) {
-        console.log(id)
+        this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
+        this.token=this.$cookie.get('token');
         this.dataForm.id = id||0;
         this.look=look;
         this.visible = true;
@@ -248,17 +355,74 @@
           this.$refs['dataForm'].resetFields();
           if (this.dataForm.id) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/info/${this.dataForm.id}`),
+              url: this.$http.adornUrl(`/biz/tran/info/${this.dataForm.id}`),
               method: 'get',
               params: this.$http.adornParams()
             }).then(({data}) => {
               if (data && data.code === 200) {
-                this.dataForm.dataTime = data.data.dataTime;
-                this.dataForm.dataAmount = data.data.dataAmount;
-                this.dataForm.effectiveData = data.data.effectiveData;
-                this.dataForm.todayConsumeMoney = data.data.todayConsumeMoney;
+                this.dataForm.enterTime = data.data.enterTime;
+                this.dataForm.weighTime = data.data.weighTime;
+                this.dataForm.checkOutTime = data.data.checkOutTime;
+                this.dataForm.outFactoryTime = data.data.outFactoryTime;
+                this.dataForm.enterImg = data.data.enterImg?data.data.enterImg.split(","):[];
+                this.dataForm.outImg = data.data.outImg?data.data.outImg.split(","):[];
+                this.dataForm.doorPostName = data.data.doorPostName;
+                this.dataForm.poundRoom = data.data.poundRoom;
+                this.dataForm.carNum = data.data.carNum;
+                this.dataForm.registTime = data.data.registTime;
+                this.dataForm.vehicleNum = data.data.vehicleNum;
+                this.dataForm.engineNum = data.data.engineNum;
+                this.dataForm.fuelType = data.data.fuelType;
+                this.dataForm.carCheckList = data.data.carCheckList;
+                this.dataForm.drivinglLicense = data.data.drivinglLicense;
+                this.dataForm.emissionStand = data.data.emissionStand;
+                this.dataForm.clientName = data.data.clientName;
+                this.dataForm.materialsNum = data.data.materialsNum;
+                this.dataForm.materialsName = data.data.materialsName;
+                this.dataForm.measureNum = data.data.measureNum;
+                this.dataForm.crossWeigh = data.data.crossWeigh;
+                this.dataForm.tareWeigh = data.data.tareWeigh;
+                this.dataForm.netWeigh = data.data.netWeigh;
+                this.dataForm.containerNum = data.data.containerNum;
+                this.dataForm.tranType = data.data.tranType;
+                this.dataForm.transportUnit = data.data.transportUnit;
+                this.dataForm.srcList=this.dataForm.enterImg.concat(this.dataForm.outImg);
+                this.dataForm.srcList.push(this.dataForm.carCheckList);
+                this.dataForm.srcList.push(this.dataForm.drivinglLicense);
+                for(var i in this.dataForm.srcList){
+                  this.dataForm.srcList[i]=this.dataForm.srcList[i].indexOf('http')!=-1?this.dataForm.srcList[i]:this.imgUrlfront+this.dataForm.srcList[i]
+                }
+                console.log(this.dataForm.srcList)
               }
             })
+          }else{
+            this.dataForm.enterTime = '';
+            this.dataForm.weighTime = '';
+            this.dataForm.checkOutTime ='';
+            this.dataForm.outFactoryTime = '';
+            this.dataForm.enterImg = [];
+            this.dataForm.outImg =[];
+            this.dataForm.doorPostName = '';
+            this.dataForm.poundRoom = '';
+            this.dataForm.carNum = '';
+            this.dataForm.registTime = '';
+            this.dataForm.vehicleNum ='';
+            this.dataForm.engineNum = '';
+            this.dataForm.fuelType = '';
+            this.dataForm.carCheckList = '';
+            this.dataForm.drivinglLicense = '';
+            this.dataForm.emissionStand = '';
+            this.dataForm.clientName = '';
+            this.dataForm.materialsNum = '';
+            this.dataForm.materialsName = '';
+            this.dataForm.measureNum = '';
+            this.dataForm.crossWeigh = '';
+            this.dataForm.tareWeigh = '';
+            this.dataForm.netWeigh = '';
+            this.dataForm.containerNum = '';
+            this.dataForm.tranType = '';
+            this.dataForm.transportUnit = '';
+            this.dataForm.srcList=[];
           }
         })
       },
@@ -267,14 +431,36 @@
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
-              url: this.$http.adornUrl(`/biz/pdbaidudata/${!this.dataForm.id ? 'save' : 'update'}`),
+              url: this.$http.adornUrl(`/biz/tran/tran/${!this.dataForm.id ? 'save' : 'update'}`),
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'dataTime': this.dataForm.dataTime+" 00:00:00",
-                'dataAmount': this.dataForm.dataAmount,
-                'effectiveData': this.dataForm.effectiveData,
-                'todayConsumeMoney': this.dataForm.todayConsumeMoney
+                'enterTime': !this.dataForm.id ? this.dataForm.enterTime+" 00:00:00":this.dataForm.enterTime,
+                'weighTime': !this.dataForm.id ? this.dataForm.weighTime+" 00:00:00":this.dataForm.weighTime,
+                'checkOutTime':!this.dataForm.id ?  this.dataForm.checkOutTime+" 00:00:00":this.dataForm.checkOutTime,
+                'outFactoryTime': !this.dataForm.id ? this.dataForm.outFactoryTime+" 00:00:00":this.dataForm.outFactoryTime,
+                'enterImg': this.dataForm.enterImg.join(","),
+                'outImg': this.dataForm.outImg.join(","),
+                'doorPostName': this.dataForm.doorPostName,
+                'poundRoom': this.dataForm.poundRoom,
+                'carNum': this.dataForm.carNum,
+                'registTime': !this.dataForm.id ? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
+                'vehicleNum': this.dataForm.vehicleNum,
+                'engineNum': this.dataForm.engineNum,
+                'fuelType': this.dataForm.fuelType,
+                'carCheckList': this.dataForm.carCheckList,
+                'drivinglLicense': this.dataForm.drivinglLicense,
+                'emissionStand': this.dataForm.emissionStand,
+                'clientName': this.dataForm.clientName,
+                'materialsNum': this.dataForm.materialsNum,
+                'materialsName': this.dataForm.materialsName,
+                'measureNum': this.dataForm.measureNum,
+                'crossWeigh': this.dataForm.crossWeigh,
+                'tareWeigh': this.dataForm.tareWeigh,
+                'netWeigh': this.dataForm.netWeigh,
+                'containerNum': this.dataForm.containerNum,
+                'tranType': this.dataForm.tranType,
+                'transportUnit': this.dataForm.transportUnit,
               })
             }).then(({data}) => {
               if (data && data.code ===200) {
@@ -294,21 +480,90 @@
           }
         })
       },
+      //上传图片
       handleRemove(file, fileList) {
-        console.log(file, fileList);
-        getBase64(file.raw).then(res => {
-          this.scjd.remove(res);
-          console.log(this.scjd)
-        })
+        this.dataForm.carCheckList='';
       },
-      handlePictureCardPreview(file) {
-        this.dialogImageUrl = file.url;
-        this.dialogVisible = true;
+      handleChange(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.carCheckList=response.data;
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       },
-      imgChange(file, fileList){
-        getBase64(file.raw).then(res => {
-          this.scjd.push(res);
-        })
+      handleChange(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.carCheckList=response.data;
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      handleRemove2(file, fileList) {
+        this.dataForm.drivinglLicense='';
+      },
+      handleChange2(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.drivinglLicense=response.data;
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      handleRemove3(file) {
+        this.dataForm.enterImg.remove(file);
+      },
+      handleChange3(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.enterImg.push(response.data);
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      handleRemove4(file) {
+        this.dataForm.outImg.remove(file);
+        console.log(this.dataForm.outImg)
+      },
+      handleChange4(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.outImg.push(response.data);
+
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       }
     }
   }
@@ -321,9 +576,16 @@
     width: 90%;
   }
   >>>.look-img{
-    width: 100px;
-    height: 100px;
+    width: 148px;
+    height: 148px;
     margin-right: 10px;
+  }
+  .box-img{
+    vertical-align: top;
+  }
+  >>>.img-list-div{
+    position: relative;
+    vertical-align: top;
   }
 </style>
 

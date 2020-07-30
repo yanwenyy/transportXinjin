@@ -14,7 +14,7 @@ module.exports = {
     // 代理列表, 是否开启代理通过[./dev.env.js]配置
     proxyTable: devEnv.OPEN_PROXY === false ? {} : {
       '/proxyApi': {
-        target: 'http://59.110.54.1:8080/jinding-back/',
+        target: 'http://27.188.69.34:90/xinjin-back/',
         changeOrigin: true,
         pathRewrite: {
           '^/proxyApi': '/'

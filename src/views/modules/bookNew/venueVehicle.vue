@@ -17,7 +17,12 @@
         <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-upload
           class="inline-block"
-          action="https://jsonplaceholder.typicode.com/posts/">
+          :headers="{'token':token}"
+          :action="this.$http.adornUrl('/biz/factorycar/import/factory/car')"
+          :on-success="handleChange"
+          :on-error="handleChange"
+          :show-file-list="false"
+        >
           <el-button type="warning">批量导入</el-button>
         </el-upload>
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
@@ -75,14 +80,14 @@
         align="center"
         label="随车清单">
         <template slot-scope="scope">
-          <img class="table-list-img" :src="imgUrlfront+scope.row.carCheckList" alt="">
+          <img class="table-list-img" :src="scope.row.carCheckList&&scope.row.carCheckList.indexOf('http')!=-1?scope.row.carCheckList:scope.row.carCheckList?imgUrlfront+scope.row.carCheckList:''" alt="">
         </template>
       </el-table-column>
       <el-table-column
         align="center"
         label="行驶证">
         <template slot-scope="scope">
-          <img class="table-list-img" :src="imgUrlfront+scope.row.drivinglLicense" alt="">
+          <img class="table-list-img" :src="scope.row.drivinglLicense&&scope.row.drivinglLicense.indexOf('http')!=-1?scope.row.drivinglLicense:scope.row.drivinglLicense?imgUrlfront+scope.row.drivinglLicense:''" alt="">
         </template>
       </el-table-column>
       <el-table-column
@@ -120,6 +125,7 @@
           evnCarNum: '',
           registTime: '',
         },
+        token:'',
         imgUrlfront:'',
         dataList: [],
         pageIndex: 1,
@@ -136,6 +142,7 @@
     activated () {
       this.getDataList();
       this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
+      this.token=this.$cookie.get('token')
     },
     methods: {
       // 获取数据列表
@@ -212,6 +219,22 @@
             }
           })
         }).catch(() => {})
+      },
+
+      //导入
+      handleChange(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '导入成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.getDataList()
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
       }
     }
   }
