@@ -7,32 +7,32 @@
       <el-form-item label="进厂时间">
         <el-date-picker
           v-model="dataForm.enterTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="计量时间">
         <el-date-picker
           v-model="dataForm.weighTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="退卡时间">
         <el-date-picker
           v-model="dataForm.checkOutTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
       <el-form-item label="出厂时间">
         <el-date-picker
           v-model="dataForm.outFactoryTime"
-          type="date"
-          value-format="yyyy-MM-dd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="请选择时间">
         </el-date-picker>
       </el-form-item>
@@ -129,8 +129,7 @@
             :on-success="handleChange"
             :on-error="handleChange"
             list-type="picture-card"
-            :on-remove="handleRemove"
-            :disabled="dataForm.carCheckList!=''">
+            :on-remove="handleRemove">
             <i class="el-icon-plus"></i>
           </el-upload>
         </div>
@@ -150,9 +149,7 @@
             :on-success="handleChange2"
             :on-error="handleChange2"
             list-type="picture-card"
-            :on-remove="handleRemove2"
-            :disabled="dataForm.drivinglLicense!=''"
-          >
+            :on-remove="handleRemove2">
             <i class="el-icon-plus"></i>
           </el-upload>
         </div>
@@ -293,29 +290,11 @@
         ],
         pfbz: [
           {
-            value: '国 0:0',
-            label: '国 0:0'
+            value: '国五',
+            label: '国五'
           }, {
-            value: '国 1:1',
-            label: '国 1:1'
-          }, {
-            value: '国 2:2',
-            label: '国 2:2'
-          }, {
-            value: '国 3:3',
-            label: '国 3:3'
-          }, {
-            value: '国 4:4',
-            label: '国 4:4'
-          }, {
-            value: '国 5:5',
-            label: '国 5:5'
-          }, {
-            value: '国 6:6',
-            label: '国 6:6'
-          }, {
-            value: '电动:D',
-            label: '电动:D'
+            value: '国六',
+            label: '国六'
           }],
         ysfs:[
           {
@@ -375,7 +354,7 @@
                 this.dataForm.fuelType = data.data.fuelType;
                 this.dataForm.carCheckList = data.data.carCheckList;
                 this.dataForm.drivinglLicense = data.data.drivinglLicense;
-                this.dataForm.emissionStand = data.data.emissionStand;
+                this.dataForm.emissionStand = data.data.doorEmissionStand;
                 this.dataForm.clientName = data.data.clientName;
                 this.dataForm.materialsNum = data.data.materialsNum;
                 this.dataForm.materialsName = data.data.materialsName;
@@ -386,13 +365,16 @@
                 this.dataForm.containerNum = data.data.containerNum;
                 this.dataForm.tranType = data.data.tranType;
                 this.dataForm.transportUnit = data.data.transportUnit;
-                this.dataForm.srcList=this.dataForm.enterImg.concat(this.dataForm.outImg);
-                this.dataForm.srcList.push(this.dataForm.carCheckList);
-                this.dataForm.srcList.push(this.dataForm.drivinglLicense);
-                for(var i in this.dataForm.srcList){
-                  this.dataForm.srcList[i]=this.dataForm.srcList[i].indexOf('http')!=-1?this.dataForm.srcList[i]:this.imgUrlfront+this.dataForm.srcList[i]
+                var list=this.dataForm.enterImg.concat(this.dataForm.outImg);
+                this.dataForm.carCheckList&&list.push(this.dataForm.carCheckList);
+                this.dataForm.drivinglLicense&&list.push(this.dataForm.drivinglLicense);
+                var i=0,len=list.length;
+                for(;i< len;i++){
+                  var v=list[i];
+                  list[i]=(list[i].indexOf('http')!=-1)?list[i]:this.imgUrlfront+list[i];
                 }
-                console.log(this.dataForm.srcList)
+                this.srcList=list;
+                // console.log(this.srcList)
               }
             })
           }else{
@@ -435,16 +417,16 @@
               method: 'post',
               data: this.$http.adornData({
                 'id': this.dataForm.id || undefined,
-                'enterTime': !this.dataForm.id ? this.dataForm.enterTime+" 00:00:00":this.dataForm.enterTime,
-                'weighTime': !this.dataForm.id ? this.dataForm.weighTime+" 00:00:00":this.dataForm.weighTime,
-                'checkOutTime':!this.dataForm.id ?  this.dataForm.checkOutTime+" 00:00:00":this.dataForm.checkOutTime,
-                'outFactoryTime': !this.dataForm.id ? this.dataForm.outFactoryTime+" 00:00:00":this.dataForm.outFactoryTime,
+                'enterTime': this.dataForm.enterTime,
+                'weighTime': this.dataForm.weighTime,
+                'checkOutTime':this.dataForm.checkOutTime,
+                'outFactoryTime': this.dataForm.outFactoryTime,
                 'enterImg': this.dataForm.enterImg.join(","),
                 'outImg': this.dataForm.outImg.join(","),
                 'doorPostName': this.dataForm.doorPostName,
                 'poundRoom': this.dataForm.poundRoom,
                 'carNum': this.dataForm.carNum,
-                'registTime': !this.dataForm.id ? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
+                'registTime': !this.dataForm.id ||this.dataForm.registTime.indexOf("00:00:00")==-1? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
                 'vehicleNum': this.dataForm.vehicleNum,
                 'engineNum': this.dataForm.engineNum,
                 'fuelType': this.dataForm.fuelType,

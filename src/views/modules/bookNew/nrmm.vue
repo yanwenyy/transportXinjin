@@ -15,16 +15,42 @@
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-upload
-          class="inline-block"
-          :headers="{'token':token}"
-          :action="this.$http.adornUrl('/biz/offroad/import/road')"
-          :on-success="handleChange"
-          :on-error="handleChange"
-          :show-file-list="false"
-          >
-          <el-button type="warning">批量导入</el-button>
-        </el-upload>
+        <el-popover
+          placement="left"
+          width="400"
+          trigger="hover">
+          <template>
+            <div class="dr-notice-body">
+              <div class="dr-notice-list">
+                <div class="inline-block dr-notice-title">1.下载excel模板</div>
+                <a :href="path+'/static/file/nrmm.xls'" download="nrmm.xls">点击下载模板</a>
+              </div>
+              <div class="dr-notice-list">
+                <div class="inline-block dr-notice-title">2.上传编辑好的文件</div>
+                <el-upload
+                  class="inline-block"
+                  :headers="{'token':token}"
+                  :action="this.$http.adornUrl('/biz/offroad/import/road')"
+                  :on-success="handleChange"
+                  :on-error="handleChange"
+                  :show-file-list="false"
+                >
+                  <el-button type="warning">批量导入</el-button>
+                </el-upload>
+              </div>
+              <div class="dr-notice-warn">
+                <div>
+                  <i class="el-icon-warning"></i>
+                  注意:
+                </div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;excel批量导入将覆盖询单内现有物料;上传文件类型仅限excel文件!</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板内有内容的单元格为必填项,请严格按照模板格式填写!</div>
+              </div>
+            </div>
+          </template>
+          <el-button type="warning" slot="reference">批量导入</el-button>
+        </el-popover>
+
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
@@ -110,6 +136,7 @@
   export default {
     data () {
       return {
+        path:window.SITE_CONFIG.cdnUrl,
         dataForm: {
           produceTime: '',
           evnProNum: '',
@@ -228,5 +255,18 @@
 <style>
   .inline-block{
     display: inline-block;
+  }
+  .dr-notice-warn{
+    width: 100%;
+    box-sizing: border-box;
+    padding:10px;
+    background: #FFE5E0;
+    color: red;
+  }
+  .dr-notice-body{
+    padding:10px;
+  }
+  .dr-notice-body>div{
+    margin-bottom: 20px;
   }
 </style>

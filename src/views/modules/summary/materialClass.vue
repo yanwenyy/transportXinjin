@@ -14,25 +14,9 @@
       <el-form-item label="物料名称:">
         <el-input v-model="dataForm.materialsName" placeholder="物料名称" clearable></el-input>
       </el-form-item>
-      <el-form-item label="月份:">
-        <el-date-picker
-          v-model="dataForm.monthTime"
-          value-format="yyyy-MM"
-          type="month"
-          placeholder="选择月份" @change="dataForm.dayTime=''">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="日期:">
-        <el-date-picker
-          v-model="dataForm.dayTime"
-          value-format="yyyy-MM-dd"
-          type="date"
-          placeholder="选择日期"  @change="dataForm.monthTime=''">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
-        <!--<el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>-->
+        <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
       </el-form-item>
     </el-form>
@@ -56,9 +40,14 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="materialsName"
         align="center"
         label="物料类别">
+      </el-table-column>
+      <el-table-column
+        prop=""
+        align="center"
+        label="物料类别编码">
       </el-table-column>
       <el-table-column
         prop="materialsName"
@@ -66,32 +55,9 @@
         label="物料名称">
       </el-table-column>
       <el-table-column
-        prop="carWeigh"
-        header-align="center"
+        prop="materialsName"
         align="center"
-        label="汽车运输量(万t)">
-      </el-table-column>
-      <el-table-column
-        header-align="center"
-        align="center"
-        label="火车运输量(万t)">
-        <template slot-scope="scope">
-          <span>{{scope.row.sumWeigh-scope.row.carWeigh}}</span>
-        </template>
-      </el-table-column>
-      <el-table-column
-        prop="sumWeigh"
-        header-align="center"
-        align="center"
-        label="总运输量(万t)">
-      </el-table-column>
-      <el-table-column
-        header-align="center"
-        align="center"
-        label="清洁运输占比(%)">
-        <template slot-scope="scope">
-          <span>{{((scope.row.sumWeigh-scope.row.carWeigh)/ scope.row.sumWeigh).toFixed(2)*100}}%</span>
-        </template>
+        label="物料名称编码">
       </el-table-column>
       <el-table-column
         fixed="right"
@@ -100,8 +66,8 @@
         width="150"
         label="操作">
         <template slot-scope="scope">
-          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row)">查看</el-button>
-          <!--<el-button v-if="isAuth('biz:pdbaidudate:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>-->
+          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -120,7 +86,7 @@
 </template>
 
 <script>
-  import AddOrUpdate from './summary-add-or-update'
+  import AddOrUpdate from './materialClass-add-or-update'
   export default {
     data () {
       return {
@@ -198,6 +164,7 @@
           this.$refs.addOrUpdate.init(id)
         })
       },
+
     }
   }
 </script>

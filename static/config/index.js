@@ -6,6 +6,7 @@
 
   // api接口请求地址
   window.SITE_CONFIG['baseUrl'] = 'http://27.188.69.34:90/xinjin-back/';
+  window.SITE_CONFIG['wsUrl'] = 'ws://27.188.69.34:90/xinjin-back/imserver/';
 
   // cdn地址 = 域名 + 版本号
   window.SITE_CONFIG['domain']  = './'; // 域名

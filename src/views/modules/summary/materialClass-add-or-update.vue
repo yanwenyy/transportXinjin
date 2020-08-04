@@ -4,18 +4,7 @@
     :close-on-click-modal="false"
     :visible.sync="visible">
     <el-form :model="dataForm" :rules="dataRule" ref="dataForm" @keyup.enter.native="dataFormSubmit()" label-width="80px">
-      <el-form-item label="环保登记编码">
-        <el-input v-model="dataForm.evnProNum" placeholder="环保登记编码"></el-input>
-      </el-form-item>
-      <el-form-item label="生产日期">
-        <el-date-picker
-          v-model="dataForm.produceTime"
-          type="date"
-          value-format="yyyy-MM-dd"
-          placeholder="请选择时间">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item label="排放阶段">
+      <el-form-item label="物料大类">
         <el-select v-model="dataForm.emission" placeholder="请选择">
           <el-option
             v-for="item in options"
@@ -25,11 +14,14 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="器械环保代码">
-        <el-input v-model="dataForm.emissionNum" placeholder="器械环保代码"></el-input>
+      <el-form-item label="物料大类编码">
+        <el-input v-model="dataForm.emissionNum" placeholder="物料大类编码"></el-input>
       </el-form-item>
-      <el-form-item label="发动机铭牌">
-        <el-input v-model="dataForm.engineNum" placeholder="发动机铭牌"></el-input>
+      <el-form-item label="物料名称">
+        <el-input v-model="dataForm.engineNum" placeholder="物料名称"></el-input>
+      </el-form-item>
+      <el-form-item label="物料名称编码">
+        <el-input v-model="dataForm.engineNum" placeholder="物料名称编码"></el-input>
       </el-form-item>
     </el-form>
     <span slot="footer" class="dialog-footer">
@@ -74,11 +66,11 @@
           engineNum:''
         },
         options: [{
-          value: '国五',
-          label: '国五'
+          value: '1',
+          label: '物料1'
         }, {
-          value: '国六',
-          label: '国六'
+          value: '2',
+          label: '物料2'
         }],
         value: '',
         dataRule: {
@@ -103,7 +95,7 @@
       this.dataForm.emission = "";
       this.dataForm.emissionNum = "";
       this.dataForm.engineNum = "";
-      },
+    },
     methods: {
       init (id) {
         this.dataForm.id = id||0;

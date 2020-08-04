@@ -40,41 +40,95 @@
           </el-option>
         </el-select>
       </el-form-item>
-      <el-form-item v-show="searchMore" label="进厂时间:">
-        <el-date-picker
-          v-model="dataForm.enterTime"
-          type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item v-show="searchMore" label="出厂时间:">
-        <el-date-picker
-          v-model="dataForm.outFactoryTime"
-          type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
       <el-form-item v-show="searchMore" label="车牌号:">
         <el-input v-model="dataForm.carNum" placeholder="车牌号" clearable></el-input>
       </el-form-item>
       <el-form-item v-show="searchMore" label="运输货物名称:">
         <el-input v-model="dataForm.materialsName" placeholder="运输货物名称" clearable></el-input>
       </el-form-item>
-      <el-form-item>
-        <span class="showMore" @click="searchMore=!searchMore">{{searchMore?'收起':'显示更多'}}</span><el-button @click="getDataList()">查询</el-button>
+      <el-form-item v-show="searchMore" label="进厂开始时间:">
+        <el-date-picker
+          v-model="dataForm.enterTimeStart"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item v-show="searchMore" label="进厂结束时间:">
+        <el-date-picker
+          v-model="dataForm.enterTimeEnd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item v-show="searchMore" label="出厂开始时间:">
+        <el-date-picker
+          v-model="dataForm.outFactoryTimeStart"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+      <el-form-item v-show="searchMore" label="出厂结束时间:">
+        <el-date-picker
+          v-model="dataForm.outFactoryTimeEnd"
+          type="datetime"
+          value-format="yyyy-MM-dd HH:mm:ss"
+          placeholder="选择日期">
+        </el-date-picker>
+      </el-form-item>
+
+      <span class="showMore" @click="searchMore=!searchMore">{{searchMore?'收起':'显示更多'}}</span>
+      <el-form-item style="text-align: right;display: block">
+        <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-upload
-          class="inline-block"
-          :headers="{'token':token}"
-          :action="this.$http.adornUrl('/biz/tran/import/tran/car')"
-          :on-success="handleChange"
-          :on-error="handleChange"
-          :show-file-list="false"
-        >
-          <el-button type="warning">批量导入</el-button>
-        </el-upload>
+        <el-popover
+        placement="left"
+        width="400"
+        trigger="hover">
+          <template>
+            <div class="dr-notice-body">
+              <div class="dr-notice-list">
+                <div class="inline-block dr-notice-title">1.下载excel模板</div>
+                <a :href="path+'/static/file/vehicle.xls'" download="vehicle.xls">点击下载模板</a>
+              </div>
+              <div class="dr-notice-list">
+                <div class="inline-block dr-notice-title">2.上传编辑好的文件</div>
+                <el-upload
+                  class="inline-block"
+                  :headers="{'token':token}"
+                  :action="this.$http.adornUrl('/biz/tran/import/tran/car')"
+                  :on-success="handleChange"
+                  :on-error="handleChange"
+                  :show-file-list="false"
+                >
+                  <el-button type="warning">选择文件</el-button>
+                </el-upload>
+              </div>
+              <div class="dr-notice-warn">
+                <div>
+                  <i class="el-icon-warning"></i>
+                  注意:
+                </div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;excel批量导入将覆盖询单内现有物料;上传文件类型仅限excel文件!</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;模板内有内容的单元格为必填项,请严格按照模板格式填写!</div>
+                <div>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;计量单号不能重复!</div>
+              </div>
+            </div>
+          </template>
+          <el-button type="warning" slot="reference">批量导入</el-button>
+        </el-popover>
+        <!--<el-upload-->
+          <!--class="inline-block"-->
+          <!--:headers="{'token':token}"-->
+          <!--:action="this.$http.adornUrl('/biz/tran/import/tran/car')"-->
+          <!--:on-success="handleChange"-->
+          <!--:on-error="handleChange"-->
+          <!--:show-file-list="false"-->
+        <!--&gt;-->
+          <!--<el-button type="warning">批量导入</el-button>-->
+        <!--</el-upload>-->
         <el-button type="warning" @click="down">导出</el-button>
         <el-popover
           placement="right"
@@ -88,11 +142,13 @@
           </template>
           <el-button slot="reference">批量隐藏列</el-button>
         </el-popover>
-        <!--<el-button v-if="isAuth('sys:user:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>-->
+        <el-button type="danger" @click="reload()">刷新</el-button>
       </el-form-item>
     </el-form>
-
-    <el-table
+    <div v-if="dataList" @scroll="barScroll" class="elScrollbar">
+      <div :style="{width:(tabelWidth*2.2)+'px',height: '1px',lineHeight:'30px'}"></div>
+    </div>
+    <el-table ref="tableList"
       :data="dataList"
       border
       v-loading="dataListLoading"
@@ -143,7 +199,7 @@
         align="center"
         label="进厂照片">
         <template slot-scope="scope">
-          <img v-for="item in (scope.row.enterImg?scope.row.enterImg.split(','):[])" class="table-list-img" :src="item&&item.indexOf('http')!=-1?item:imgUrlfront+item" alt="">
+          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" v-for="item in (scope.row.enterImg?scope.row.enterImg.split(','):[])" class="table-list-img" :src="item&&item.indexOf('http')!=-1?item:imgUrlfront+item" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
@@ -152,7 +208,7 @@
         align="center"
         label="出厂照片">
         <template slot-scope="scope">
-          <img v-for="item in (scope.row.outImg?scope.row.outImg.split(','):[])" class="table-list-img" :src="(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" alt="">
+          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" v-for="item in (scope.row.outImg?scope.row.outImg.split(','):[])" class="table-list-img" :src="(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
@@ -182,9 +238,9 @@
         header-align="center"
         align="center"
         label="注册日期">
-        <!--<template slot-scope="scope">-->
-        <!--{{ (scope.row.effective).toFixed(2)*100+"%"}}-->
-        <!--</template>-->
+        <template slot-scope="scope">
+          {{ scope.row.registTime&&scope.row.registTime.split(" ")[0]}}
+        </template>
       </el-table-column>
       <el-table-column
         v-if="checkedCities.indexOf('车辆识别代号')!=-1"
@@ -210,7 +266,7 @@
         align="center"
         label="随车清单">
         <template slot-scope="scope">
-          <img class="table-list-img" :src="(scope.row.carCheckList&&scope.row.carCheckList.indexOf('http')!=-1?scope.row.carCheckList:scope.row.carCheckList?imgUrlfront+scope.row.carCheckList:'')" alt="">
+          <img  @click="preImg(scope.row.carCheckList&&scope.row.carCheckList.indexOf('http')!=-1?scope.row.carCheckList:imgUrlfront+scope.row.carCheckList)" class="table-list-img" v-if="scope.row.carCheckList" :src="(scope.row.carCheckList&&scope.row.carCheckList.indexOf('http')!=-1?scope.row.carCheckList:scope.row.carCheckList?imgUrlfront+scope.row.carCheckList:'')" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
@@ -219,12 +275,12 @@
         align="center"
         label="行驶证">
         <template slot-scope="scope">
-          <img class="table-list-img" :src="(scope.row.drivinglLicense&&scope.row.drivinglLicense.indexOf('http')!=-1?scope.row.drivinglLicense:scope.row.drivinglLicense?imgUrlfront+scope.row.drivinglLicense:'')" alt="">
+          <img @click="preImg(scope.row.drivinglLicense&&scope.row.drivinglLicense.indexOf('http')!=-1?scope.row.drivinglLicense:imgUrlfront+scope.row.drivinglLicense)" class="table-list-img" v-if="scope.row.drivinglLicense" :src="(scope.row.drivinglLicense&&scope.row.drivinglLicense.indexOf('http')!=-1?scope.row.drivinglLicense:scope.row.drivinglLicense?imgUrlfront+scope.row.drivinglLicense:'')" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
         v-if="checkedCities.indexOf('排放阶段')!=-1"
-        prop="emissionStand"
+        prop="doorEmissionStand"
         header-align="center"
         align="center"
         label="排放阶段">
@@ -284,7 +340,7 @@
         v-if="checkedCities.indexOf('运输方式')!=-1"
         header-align="center"
         align="center"
-        label="运输方式（铁路/公路）">
+        label="运输方式">
         <template slot-scope="scope">
           {{scope.row.tranType==1?'公路':'铁路'}}
         </template>
@@ -309,7 +365,7 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
+    <el-pagination class="vehicle-pagin"
       @size-change="sizeChangeHandle"
       @current-change="currentChangeHandle"
       :current-page="pageIndex"
@@ -320,6 +376,7 @@
     </el-pagination>
     <!-- 弹窗, 新增 / 修改 -->
     <add-or-update v-if="addOrUpdateVisible" ref="addOrUpdate" @refreshDataList="getDataList"></add-or-update>
+    <ImgPre v-if="ImgPreVisible"  ref="preImgList" @refreshClose="imgClose"></ImgPre>
   </div>
 </template>
 
@@ -327,13 +384,18 @@
   const cityOptions = ['ID', '进厂时间', '计量时间', '退卡时间','出厂时间','进厂照片','出厂照片','门岗名称','磅房名称',
     '车牌号','注册日期','车辆识别代号','发动机号码','燃油种类','随车清单','行驶证','排放阶段','供应商',
   '物料编码','物料名称','计量单号','毛重','皮重','净重','集装箱号','运输方式','运输单位'];
-  import AddOrUpdate from './vehicle-add-or-update'
+  import AddOrUpdate from './vehicle-add-or-update';
+  import ImgPre from './img-pre'
+  import {PxSocket,randomString} from '@/utils'
   export default {
     data () {
       return {
+        path:window.SITE_CONFIG.cdnUrl,
         dataForm: {
-          enterTime: '',
-          outFactoryTime: '',
+          enterTimeStart: '',
+          enterTimeEnd: '',
+          outFactoryTimeStart: '',
+          outFactoryTimeEnd: '',
           carNum:'',
           materialsName:'',
           doorPostName:'',
@@ -345,7 +407,6 @@
 
         },
         searchMore:false,
-        url:'https://fuss10.elemecdn.com/e/5d/4a731a90594a4af544c0c25941171jpeg.jpeg',
         dataList: [],
         pageIndex: 1,
         pageSize: 10,
@@ -353,12 +414,16 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
+        ImgPreVisible:false,
         checkAll: false,
         checkedCities: cityOptions,
         cities: cityOptions,
         isIndeterminate: true,
         imgUrlfront:'',
         token:'',
+        tabelWidth:0,
+        minwidth:0,
+        ws:'',
         ryzl:[
           {
             value: '柴油',
@@ -379,29 +444,11 @@
         ],
         pfbz: [
           {
-          value: '国 0:0',
-          label: '国 0:0'
-        }, {
-          value: '国 1:1',
-          label: '国 1:1'
-        }, {
-          value: '国 2:2',
-          label: '国 2:2'
-        }, {
-          value: '国 3:3',
-          label: '国 3:3'
-        }, {
-          value: '国 4:4',
-          label: '国 4:4'
-        }, {
-          value: '国 5:5',
-          label: '国 5:5'
-        }, {
-          value: '国 6:6',
-          label: '国 6:6'
-        }, {
-          value: '电动:D',
-          label: '电动:D'
+          value: '国五',
+          label: '国五'
+          }, {
+          value: '国六',
+          label: '国六'
         }],
         ysfs:[
           {
@@ -412,29 +459,65 @@
             value: '1',
             label: '公路'
           }
-        ]
+        ],
+        pickerOptionsStart: {
+          disabledDate: time => {
+            let endDateVal = this.dataForm.outFactoryTime;
+            if (endDateVal) {
+              return time.getTime() > new Date(endDateVal).getTime();
+            }
+          }
+        },
+        pickerOptionsEnd: {
+          disabledDate: time => {
+            let beginDateVal = this.dataForm.enterTime;
+            if (beginDateVal) {
+              return (
+                time.getTime() <
+                new Date(beginDateVal).getTime()
+              );
+            }
+          },
+        },
       }
     },
     components: {
-      AddOrUpdate
+      AddOrUpdate,
+      ImgPre
     },
     activated () {
       this.getDataList();
       this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
-      this.token=this.$cookie.get('token')
+      this.token=this.$cookie.get('token');
+    },
+    mounted(){
+      var num="_"+randomString();
+      this.ws=new PxSocket({
+        url:this.$http.wsUrl('xinjin'+num),
+        name:'getData',
+        data:'jinding'+num,
+        succ:this.getDataList
+      });
+      this.ws.connect();
+      this.tabelWidth=this.$refs.tableList.bodyWrapper.scrollWidth;
+    },
+    beforeDestroy(){
+      this.ws.close();
     },
     methods: {
       // 获取数据列表
       getDataList () {
-        this.dataListLoading = true
+        this.dataListLoading = true;
         this.$http({
           url: this.$http.adornUrl('/jinding/tran/list'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'enterTime': this.dataForm.enterTime||'',
-            'outFactoryTime': this.dataForm.outFactoryTime||'',
+            'enterTimeStart': this.dataForm.enterTimeStart|| '',
+            'enterTimeEnd': this.dataForm.enterTimeEnd|| '',
+            'outFactoryTimeStart': this.dataForm.outFactoryTimeStart|| '',
+            'outFactoryTimeEnd': this.dataForm.outFactoryTimeEnd|| '',
             'carNum': this.dataForm.carNum,
             'materialsName': this.dataForm.materialsName,
             'doorPostName': this.dataForm.doorPostName,
@@ -477,6 +560,16 @@
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id,look)
         })
+      },
+      //图片预览
+      preImg(src){
+        this.ImgPreVisible = true;
+        this.$nextTick(() => {
+          this.$refs.preImgList.init(src)
+        })
+      },
+      imgClose(){
+        this.ImgPreVisible = false;
       },
       // 删除
       deleteHandle (id) {
@@ -541,6 +634,17 @@
       down (){
         var url='/jinding/po/list?pageNum='+this.pageIndex+'&pageSize='+this.pageSize+'&enterTime='+this.dataForm.enterTime+'&outFactoryTime='+this.dataForm.outFactoryTime+ '&carNum='+this.dataForm.carNum+'&materialsName='+this.dataForm.materialsName+ '&doorPostName='+this.dataForm.doorPostName+'&poundRoom='+this.dataForm.poundRoom+'&containerNum='+ this.dataForm.containerNum+'&tranType='+this.dataForm.tranType+'&emissionStand='+this.dataForm.emissionStand+ '&fuelType='+this.dataForm.fuelType;
         window.open(this.$http.adornUrl(url));
+      },
+
+      //刷新页面
+      reload(){
+        this.pageIndex = 1
+        this.getDataList()
+      },
+
+      //自定义滚动条
+      barScroll(e){
+        this.$refs.tableList.bodyWrapper.scrollLeft =e.target.scrollLeft+10;
       }
     }
   }
@@ -561,8 +665,35 @@
     color:cornflowerblue;
     cursor: pointer;
     margin-right: 30px;
+    display: inline-block;
+    margin-top: 10px;
   }
   .table-list-img{
     margin-bottom: 10px;
+  }
+  .elScrollbar{
+    width: 77%;
+    overflow-x: auto;
+    position: fixed;
+    left: 20%;
+    box-sizing: border-box;
+    bottom:3.5%;
+    z-index: 999;
+  }
+  .el-table--scrollable-x .el-table__body-wrapper {
+    overflow-x: hidden;
+  }
+  .dr-notice-warn{
+    width: 100%;
+    box-sizing: border-box;
+    padding:10px;
+    background: #FFE5E0;
+    color: red;
+  }
+  .dr-notice-body{
+    padding:10px;
+  }
+  .dr-notice-body>div{
+    margin-bottom: 20px;
   }
 </style>
