@@ -82,8 +82,8 @@
       <span class="showMore" @click="searchMore=!searchMore">{{searchMore?'收起':'显示更多'}}</span>
       <el-form-item style="text-align: right;display: block">
         <el-button @click="getDataList()">查询</el-button>
-        <el-button v-if="" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-popover
+        <el-button v-if="isAuth('biz:tran:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
+        <el-popover v-if="isAuth('biz:tran:save')"
         placement="left"
         width="400"
         trigger="hover">
@@ -146,7 +146,7 @@
       </el-form-item>
     </el-form>
     <div v-if="dataList" @scroll="barScroll" class="elScrollbar">
-      <div :style="{width:(tabelWidth*2.2)+'px',height: '1px',lineHeight:'30px'}"></div>
+      <div :style="{width:(tabelWidth*2.3)+'px',height: '1px',lineHeight:'30px'}"></div>
     </div>
     <el-table ref="tableList"
       :data="dataList"
@@ -342,7 +342,7 @@
         align="center"
         label="运输方式">
         <template slot-scope="scope">
-          {{scope.row.tranType==1?'公路':'铁路'}}
+          {{scope.row.tranType==0?'铁路':'公路'}}
         </template>
       </el-table-column>
       <el-table-column
@@ -360,8 +360,8 @@
         label="操作">
         <template slot-scope="scope">
           <!--<el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id,'look')">查看</el-button>-->
-          <el-button v-if="" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
-          <el-button v-if="" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
+          <el-button v-if="isAuth('biz:tran:update')" type="text" size="small" @click="addOrUpdateHandle(scope.row.id)">修改</el-button>
+          <el-button v-if="isAuth('biz:tran:delete')" type="text" size="small" @click="deleteHandle(scope.row.id)">删除</el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -493,7 +493,7 @@
     mounted(){
       var num="_"+randomString();
       this.ws=new PxSocket({
-        url:this.$http.wsUrl('xinjin'+num),
+        url:this.$http.wsUrl('jinding'+num),
         name:'getData',
         data:'jinding'+num,
         succ:this.getDataList
@@ -644,7 +644,7 @@
 
       //自定义滚动条
       barScroll(e){
-        this.$refs.tableList.bodyWrapper.scrollLeft =e.target.scrollLeft+10;
+        this.$refs.tableList.bodyWrapper.scrollLeft =e.target.scrollLeft;
       }
     }
   }
@@ -677,7 +677,7 @@
     position: fixed;
     left: 20%;
     box-sizing: border-box;
-    bottom:3.5%;
+    bottom:3%;
     z-index: 999;
   }
   .el-table--scrollable-x .el-table__body-wrapper {

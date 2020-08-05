@@ -2,12 +2,12 @@
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="物料大类">
-        <el-select v-model="dataForm.emission" placeholder="请选择">
+        <el-select v-model="dataForm.parentId" placeholder="请选择">
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.id"
+            :label="item.materialsName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -40,14 +40,14 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop="materialsName"
+        prop="parentName"
         align="center"
-        label="物料类别">
+        label="物料大类">
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="parentId"
         align="center"
-        label="物料类别编码">
+        label="物料大类编码">
       </el-table-column>
       <el-table-column
         prop="materialsName"
@@ -55,7 +55,7 @@
         label="物料名称">
       </el-table-column>
       <el-table-column
-        prop="materialsName"
+        prop="id"
         align="center"
         label="物料名称编码">
       </el-table-column>
@@ -91,8 +91,7 @@
     data () {
       return {
         dataForm: {
-          monthTime: '',
-          dayTime: '',
+          parentId: '',
           materialsName:''
         },
         dataList: [],
@@ -116,19 +115,25 @@
     },
     activated () {
       this.getDataList();
+      this.$http({
+        url: this.$http.adornUrl('/biz/materials/select/list'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({data}) => {
+        this.options = data && data.code === 200 ? data.data : []
+      })
     },
     methods: {
       // 获取数据列表
       getDataList () {
         this.dataListLoading = true;
         this.$http({
-          url: this.$http.adornUrl('/jinding/sum/list'),
+          url: this.$http.adornUrl('/biz/materials/list'),
           method: 'get',
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'monthTime': this.dataForm.monthTime||'',
-            'dayTime': this.dataForm.dayTime||'',
+            'parentId': this.dataForm.parentId,
             'materialsName': this.dataForm.materialsName
           })
         }).then(({data}) => {
@@ -163,6 +168,37 @@
         this.$nextTick(() => {
           this.$refs.addOrUpdate.init(id)
         })
+      },
+
+      // 删除
+      deleteHandle (id) {
+        var userIds = id ? [id] : this.dataListSelections.map(item => {
+          return item.userId
+        })
+        this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.$http({
+            url: this.$http.adornUrl('/biz/materials/delete'),
+            method: 'post',
+            data: this.$http.adornData(userIds, false)
+          }).then(({data}) => {
+            if (data && data.code === 200) {
+              this.$message({
+                message: '操作成功',
+                type: 'success',
+                duration: 1500,
+                onClose: () => {
+                  this.getDataList()
+                }
+              })
+            } else {
+              this.$message.error(data.msg)
+            }
+          })
+        }).catch(() => {})
       },
 
     }
