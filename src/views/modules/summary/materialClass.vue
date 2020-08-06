@@ -57,6 +57,7 @@
     </el-form>
     <el-table
       :data="dataList"
+      height="80vh"
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"

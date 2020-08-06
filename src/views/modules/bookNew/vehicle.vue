@@ -150,6 +150,7 @@
     </div>
     <el-table ref="tableList"
               :data="dataList"
+              height="80vh"
               border
               v-loading="dataListLoading"
               @selection-change="selectionChangeHandle"
@@ -680,7 +681,7 @@
     position: fixed;
     left: 20%;
     box-sizing: border-box;
-    bottom:3%;
+    bottom:2%;
     z-index: 999;
   }
   .el-table--scrollable-x .el-table__body-wrapper {
