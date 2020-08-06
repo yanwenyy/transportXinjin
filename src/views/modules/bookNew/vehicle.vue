@@ -495,7 +495,7 @@
     mounted(){
       var num="_"+randomString();
       this.ws=new PxSocket({
-        url:this.$http.wsUrl('jinding'+num),
+        url:this.$http.wsUrl('xinjin'+num),
         name:'getData',
         data:'jinding'+num,
         succ:this.getDataList
