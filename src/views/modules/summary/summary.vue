@@ -2,12 +2,12 @@
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
       <el-form-item label="物料大类">
-        <el-select v-model="dataForm.emission" placeholder="请选择">
+        <el-select v-model="dataForm.materialspId" placeholder="请选择">
           <el-option
             v-for="item in options"
-            :key="item.value"
-            :label="item.label"
-            :value="item.value">
+            :key="item.id"
+            :label="item.materialsName"
+            :value="item.id">
           </el-option>
         </el-select>
       </el-form-item>
@@ -56,7 +56,7 @@
         label="ID">
       </el-table-column>
       <el-table-column
-        prop=""
+        prop="materialsPname"
         align="center"
         label="物料类别">
       </el-table-column>
@@ -127,7 +127,8 @@
         dataForm: {
           monthTime: '',
           dayTime: '',
-          materialsName:''
+          materialsName:'',
+          materialspId:''
         },
         dataList: [],
         pageIndex: 1,
@@ -150,6 +151,13 @@
     },
     activated () {
       this.getDataList();
+      this.$http({
+        url: this.$http.adornUrl('/biz/materials/select/list'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({data}) => {
+        this.options = data && data.code === 10000 ? data.data : [];
+      })
     },
     methods: {
       // 获取数据列表
@@ -163,7 +171,8 @@
             'pageSize': this.pageSize,
             'monthTime': this.dataForm.monthTime||'',
             'dayTime': this.dataForm.dayTime||'',
-            'materialsName': this.dataForm.materialsName
+            'materialsName': this.dataForm.materialsName,
+            'materialspId':this.dataForm.materialspId
           })
         }).then(({data}) => {
           if (data && data.code === 10000) {

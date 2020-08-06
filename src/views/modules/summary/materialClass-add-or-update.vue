@@ -107,16 +107,12 @@
       }
     },
     created(){
-      this.dataForm.materialsId = "";
-      this.dataForm.materialsName = "";
-      this.dataForm.parentId = "";
-      this.dataForm.parentName = "";
       this.$http({
         url: this.$http.adornUrl('/biz/materials/select/list'),
         method: 'get',
         params: this.$http.adornParams()
       }).then(({data}) => {
-        this.options = data && data.code === 200 ? data.data : []
+        this.options = data && data.code === 10000 ? data.data : []
       })
     },
     methods: {
@@ -138,6 +134,12 @@
                 this.dataForm.parentName = data.data.parentName;
               }
             })
+          }else{
+            this.radio='1';
+            this.dataForm.materialsId = "";
+            this.dataForm.materialsName = "";
+            this.dataForm.parentId = "";
+            this.dataForm.parentName = "";
           }
         })
       },

@@ -15,10 +15,10 @@
       <el-form-item>
         <el-button @click="getDataList()">查询</el-button>
         <el-button v-if="isAuth('biz:offroad:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
-        <el-popover v-if="isAuth('biz:offroad:save')"
+        <el-popover  v-model="drVisibel" v-if="isAuth('biz:offroad:save')"
           placement="left"
           width="400"
-          trigger="hover">
+          trigger="click">
           <template>
             <div class="dr-notice-body">
               <div class="dr-notice-list">
@@ -149,6 +149,7 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
+        drVisibel:false
       }
     },
     components: {
@@ -242,7 +243,8 @@
             type: 'success',
             duration: 1500,
             onClose: () => {
-              this.getDataList()
+              this.getDataList();
+              this.drVisibel=false;
             }
           })
         } else {
