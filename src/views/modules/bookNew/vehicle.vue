@@ -150,7 +150,6 @@
     </div>
     <el-table ref="tableList"
               :data="dataList"
-              max-height="80vh"
               border
               v-loading="dataListLoading"
               @selection-change="selectionChangeHandle"

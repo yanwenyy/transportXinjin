@@ -38,7 +38,7 @@
     </el-form>
     <el-table
       :data="dataList"
-      max-height="80vh"
+      height="80vh"
       border
       v-loading="dataListLoading"
       @selection-change="selectionChangeHandle"
