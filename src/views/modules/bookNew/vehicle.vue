@@ -678,7 +678,8 @@
     width: 77%;
     overflow-x: auto;
     position: fixed;
-    left: 20%;
+    /*left: 20%;*/
+    left: 250px;
     box-sizing: border-box;
     bottom:2%;
     z-index: 999;
