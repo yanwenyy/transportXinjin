@@ -1,16 +1,6 @@
 <template>
   <div class="mod-user">
     <el-form :inline="true" :model="dataForm" @keyup.enter.native="getDataList()">
-      <el-form-item label="物料大类">
-        <el-select v-model="dataForm.materialspId" placeholder="请选择">
-          <el-option
-            v-for="item in options"
-            :key="item.id"
-            :label="item.materialsName"
-            :value="item.id">
-          </el-option>
-        </el-select>
-      </el-form-item>
       <el-form-item label="物料名称:">
         <el-input v-model="dataForm.materialsName" placeholder="物料名称" clearable></el-input>
       </el-form-item>
@@ -44,12 +34,6 @@
       @selection-change="selectionChangeHandle"
       style="width: 100%;">
       <el-table-column
-        type="selection"
-        header-align="center"
-        align="center"
-        width="50">
-      </el-table-column>
-      <el-table-column
         type="index"
         header-align="center"
         align="center"
@@ -59,7 +43,7 @@
       <el-table-column
         prop="materialsPname"
         align="center"
-        label="物料类别">
+        label="物料大类">
       </el-table-column>
       <el-table-column
         prop="materialsName"
@@ -70,32 +54,48 @@
         prop="carWeigh"
         header-align="center"
         align="center"
-        label="汽车运输量(万t)">
+        label="汽车运输量(吨)">
+        <template slot-scope="scope">
+          <span>{{scope.row.carWeigh.toFixed(2)}}</span>
+        </template>
       </el-table-column>
       <el-table-column
+        prop="trainWeigh"
         header-align="center"
         align="center"
-        label="火车运输量(万t)">
+        label="火车运输量(吨)">
         <template slot-scope="scope">
-          <span>{{scope.row.sumWeigh-scope.row.carWeigh}}</span>
+          <span>{{scope.row.trainWeigh.toFixed(2)}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
+        prop="trainWeigh"
+        header-align="center"
+        align="center"
+        label="纯电动运输量(吨)">
+        <template slot-scope="scope">
+          <span>{{scope.row.electWeigh.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <el-table-column
         prop="sumWeigh"
         header-align="center"
         align="center"
-        label="总运输量(万t)">
+        label="总运输量(吨)">
+        <template slot-scope="scope">
+          <span>{{scope.row.sumWeigh.toFixed(2)}}</span>
+        </template>
       </el-table-column>
       <el-table-column
+        prop="percentage"
         header-align="center"
         align="center"
         label="清洁运输占比(%)">
         <template slot-scope="scope">
-          <span>{{((scope.row.sumWeigh-scope.row.carWeigh)/ scope.row.sumWeigh).toFixed(2)*100}}%</span>
+          <span>{{scope.row.percentage%1===0?scope.row.percentage*100+'%':(scope.row.percentage*100).toFixed(2)+'%'}}</span>
         </template>
       </el-table-column>
       <el-table-column
-        fixed="right"
         header-align="center"
         align="center"
         width="150"
@@ -128,8 +128,7 @@
         dataForm: {
           monthTime: '',
           dayTime: '',
-          materialsName:'',
-          materialspId:''
+          materialsName:''
         },
         dataList: [],
         pageIndex: 1,
@@ -138,13 +137,6 @@
         dataListLoading: false,
         dataListSelections: [],
         addOrUpdateVisible: false,
-        options: [{
-          value: '1',
-          label: '物料1'
-        }, {
-          value: '2',
-          label: '物料2'
-        }]
       }
     },
     components: {
@@ -152,13 +144,6 @@
     },
     activated () {
       this.getDataList();
-      this.$http({
-        url: this.$http.adornUrl('/biz/materials/select/list'),
-        method: 'get',
-        params: this.$http.adornParams()
-      }).then(({data}) => {
-        this.options = data && data.code === 10000 ? data.data : [];
-      })
     },
     methods: {
       // 获取数据列表
@@ -172,12 +157,14 @@
             'pageSize': this.pageSize,
             'monthTime': this.dataForm.monthTime||'',
             'dayTime': this.dataForm.dayTime||'',
-            'materialsName': this.dataForm.materialsName,
-            'materialspId':this.dataForm.materialspId
+            'materialsName': this.dataForm.materialsName
           })
         }).then(({data}) => {
           if (data && data.code === 10000) {
-            this.dataList = data.data
+            this.dataList = data.data;
+            for(var i in this.dataList){
+              this.dataList[i].trainWeigh=this.dataList[i].sumWeigh-this.dataList[i].carWeigh-this.dataList[i].electWeigh
+            }
             this.totalPage = data.total
           } else {
             this.dataList = []
@@ -203,10 +190,43 @@
       },
       // 新增 / 修改
       addOrUpdateHandle (id) {
-        this.addOrUpdateVisible = true
-        this.$nextTick(() => {
-          this.$refs.addOrUpdate.init(id)
+        // this.addOrUpdateVisible = true
+        // this.$nextTick(() => {
+        //   this.$refs.addOrUpdate.init(id)
+        // })
+
+        this.$router.push({
+          name: 'summary-detail',
+          // name: 'mallList',
+          params: {
+            list: id,
+            matBo: false
+          }
         })
+      },
+
+      getSummaries(param) {
+        const { columns, data } = param;
+        const sums = [];
+        columns.forEach((column, index) => {
+          if (index === 0) {
+            sums[index] = '合计';
+            return;
+          }else if (index === 1||index === 7||index === 2) {
+            sums[index] = '';
+            return;
+          }
+          const values = data.map(item => Number(item[column.property]));
+          sums[index] = values.reduce((prev, curr) => {
+            const value = Number(curr);
+            if (!isNaN(value)) {
+              return prev + curr;
+            } else {
+              return prev;
+            }
+          }, 0);
+        });
+        return sums;
       },
     }
   }

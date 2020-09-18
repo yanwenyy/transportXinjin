@@ -37,17 +37,7 @@ const mainRoutes = {
     { path: '/theme', component: _import('common/theme'), name: 'theme', meta: { title: '主题' } },
     { path: '/demo-echarts', component: _import('demo/echarts'), name: 'demo-echarts', meta: { title: 'demo-echarts', isTab: true } },
     { path: '/demo-ueditor', component: _import('demo/ueditor'), name: 'demo-ueditor', meta: { title: 'demo-ueditor', isTab: true } },
-    { path: '/railway', component: _import('modules/book/railway'), name: 'railway', meta: { title: '铁路集装箱', isTab: true } },
-    { path: '/importedOre', component: _import('modules/book/importedOre'), name: 'importedOre', meta: { title: '进口矿', isTab: true } },
-    { path: '/injectionCoal', component: _import('modules/book/injectionCoal'), name: 'injectionCoal', meta: { title: '喷吹煤', isTab: true } },
-    { path: '/sinterCoal', component: _import('modules/book/sinterCoal'), name: 'sinterCoal', meta: { title: '烧结煤', isTab: true } },
-    { path: '/coke', component: _import('modules/book/coke'), name: 'coke', meta: { title: '焦炭', isTab: true } },
-    { path: '/scrapIron', component: _import('modules/book/scrapIron'), name: 'scrapIron', meta: { title: '外购废铁', isTab: true } },
-    { path: '/limestone', component: _import('modules/book/limestone'), name: 'limestone', meta: { title: '灰石', isTab: true } },
-    { path: '/waterSlag', component: _import('modules/book/waterSlag'), name: 'waterSlag', meta: { title: '水渣', isTab: true } },
-    { path: '/steelSlag', component: _import('modules/book/steelSlag'), name: 'steelSlag', meta: { title: '钢渣', isTab: true } },
-    { path: '/steel', component: _import('modules/book/steel'), name: 'steel', meta: { title: '钢材', isTab: true } },
-    { path: '/summary', component: _import('modules/summary/summary'), name: 'summary', meta: { title: '汇总表', isTab: true } },
+    { path: '/summary-detail', component: _import('modules/summary/summary-detailed'), name: 'summary-detail', meta: { title: '明细表', isTab: true } },
   ],
   beforeEnter (to, from, next) {
     let token = Vue.cookie.get('token')

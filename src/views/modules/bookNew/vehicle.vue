@@ -8,7 +8,14 @@
         <el-input v-model="dataForm.poundRoom" placeholder="磅房" clearable></el-input>
       </el-form-item>
       <el-form-item label="集装箱号:">
-        <el-input v-model="dataForm.containerNum" placeholder="集装箱号" clearable></el-input>
+        <el-select clearable  v-model="dataForm.ifconm" placeholder="请选择">
+          <el-option
+            v-for="item in ifJzx"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="运输方式:">
         <el-select clearable  v-model="dataForm.tranType" placeholder="请选择">
@@ -46,33 +53,17 @@
       <el-form-item v-show="searchMore" label="运输货物名称:">
         <el-input v-model="dataForm.materialsName" placeholder="运输货物名称" clearable></el-input>
       </el-form-item>
-      <el-form-item v-show="searchMore" label="进厂开始时间:">
+      <el-form-item v-show="searchMore" label="开始时间:">
         <el-date-picker
-          v-model="dataForm.enterTimeStart"
+          v-model="dataForm.timeStart"
           type="datetime"
           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择日期">
         </el-date-picker>
       </el-form-item>
-      <el-form-item v-show="searchMore" label="进厂结束时间:">
+      <el-form-item v-show="searchMore" label="结束时间:">
         <el-date-picker
-          v-model="dataForm.enterTimeEnd"
-          type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item v-show="searchMore" label="出厂开始时间:">
-        <el-date-picker
-          v-model="dataForm.outFactoryTimeStart"
-          type="datetime"
-          value-format="yyyy-MM-dd HH:mm:ss"
-          placeholder="选择日期">
-        </el-date-picker>
-      </el-form-item>
-      <el-form-item v-show="searchMore" label="出厂结束时间:">
-        <el-date-picker
-          v-model="dataForm.outFactoryTimeEnd"
+          v-model="dataForm.timeEnd"
           type="datetime"
           value-format="yyyy-MM-dd HH:mm:ss"
           placeholder="选择日期">
@@ -143,12 +134,14 @@
           <el-button slot="reference">批量隐藏列</el-button>
         </el-popover>
         <el-button type="danger" @click="reload()">刷新</el-button>
+        <el-button v-if="isAuth('biz:tran:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
     </el-form>
     <div v-if="dataList" @scroll="barScroll" class="elScrollbar">
-      <div :style="{width:(tabelWidth*2.3)+'px',height: '1px',lineHeight:'30px'}"></div>
+      <div :style="{width:(tabelWidth*2.6)+'px',height: '1px',lineHeight:'30px'}"></div>
     </div>
     <el-table ref="tableList"
+              height="80vh"
               :data="dataList"
               border
               v-loading="dataListLoading"
@@ -169,6 +162,7 @@
         label="ID">
       </el-table-column>
       <el-table-column
+        width="120"
         v-if="checkedCities.indexOf('进厂时间')!=-1"
         prop="enterTime"
         align="center"
@@ -298,10 +292,24 @@
         label="物料编码">
       </el-table-column>
       <el-table-column
+        v-if="checkedCities.indexOf('物料大类')!=-1"
+        prop="materialsPname"
+        align="center"
+        label="物料大类">
+      </el-table-column>
+      <el-table-column
         v-if="checkedCities.indexOf('物料名称')!=-1"
         prop="materialsName"
         align="center"
         label="物料名称">
+      </el-table-column>
+      <el-table-column
+        v-if="checkedCities.indexOf('磅房照片')!=-1"
+        align="center"
+        label="磅房照片">
+        <template slot-scope="scope">
+          <img @click="preImg(scope.row.poundImg&&scope.row.poundImg.indexOf('http')!=-1?scope.row.poundImg:imgUrlfront+scope.row.poundImg)" class="table-list-img" v-if="scope.row.poundImg" :src="(scope.row.poundImg&&scope.row.poundImg.indexOf('http')!=-1?scope.row.poundImg:scope.row.poundImg?imgUrlfront+scope.row.poundImg:'')" alt=" ">
+        </template>
       </el-table-column>
       <el-table-column
         v-if="checkedCities.indexOf('计量单号')!=-1"
@@ -342,7 +350,7 @@
         align="center"
         label="运输方式">
         <template slot-scope="scope">
-          {{scope.row.tranType==0?'铁路':'公路'}}
+          {{scope.row.tranType==0?'铁路':scope.row.tranType==1?'公路':scope.row.tranType==2?'纯电动':''}}
         </template>
       </el-table-column>
       <el-table-column
@@ -383,7 +391,7 @@
 <script>
   const cityOptions = ['ID', '进厂时间', '计量时间', '退卡时间','出厂时间','进厂照片','出厂照片','门岗名称','磅房名称',
     '车牌号','注册日期','车辆识别代号','发动机号码','燃油种类','随车清单','行驶证','排放阶段','供应商',
-  '物料编码','物料名称','计量单号','毛重','皮重','净重','集装箱号','运输方式','运输单位'];
+    '物料编码','物料名称','计量单号','毛重','皮重','净重','集装箱号','运输方式','运输单位','磅单类型','车队名称','物料大类','磅房照片'];
   import AddOrUpdate from './vehicle-add-or-update';
   import ImgPre from './img-pre'
   import {PxSocket,randomString} from '@/utils'
@@ -392,19 +400,18 @@
       return {
         path:window.SITE_CONFIG.cdnUrl,
         dataForm: {
-          enterTimeStart: '',
-          enterTimeEnd: '',
-          outFactoryTimeStart: '',
-          outFactoryTimeEnd: '',
+          timeStart: '',
+          timeEnd: '',
           carNum:'',
           materialsName:'',
           doorPostName:'',
           poundRoom: '',
-          containerNum: '',
+          ifconm: '',
           tranType:'',
           emissionStand:'',
           fuelType:'',
-
+          meaType:'',
+          materialsPname:''
         },
         searchMore:false,
         dataList: [],
@@ -444,12 +451,16 @@
         ],
         pfbz: [
           {
-          value: '国五',
-          label: '国五'
+            value: '国五',
+            label: '国五'
           }, {
-          value: '国六',
-          label: '国六'
-        }],
+            value: '国六',
+            label: '国六'
+          },
+          {
+            value: '纯电动',
+            label: '纯电动'
+          }],
         ysfs:[
           {
             value: '0',
@@ -458,6 +469,20 @@
           {
             value: '1',
             label: '公路'
+          },
+          {
+            value: '2',
+            label: '纯电动'
+          }
+        ],
+        ifJzx:[
+          {
+            value:'1',
+            label:'是'
+          },
+          {
+            value:'2',
+            label:'否'
           }
         ],
         pickerOptionsStart: {
@@ -516,18 +541,17 @@
           params: this.$http.adornParams({
             'pageNum': this.pageIndex,
             'pageSize': this.pageSize,
-            'enterTimeStart': this.dataForm.enterTimeStart|| '',
-            'enterTimeEnd': this.dataForm.enterTimeEnd|| '',
-            'outFactoryTimeStart': this.dataForm.outFactoryTimeStart|| '',
-            'outFactoryTimeEnd': this.dataForm.outFactoryTimeEnd|| '',
+            'timeStart': this.dataForm.timeStart || '',
+            'timeEnd': this.dataForm.timeEnd || '',
             'carNum': this.dataForm.carNum,
             'materialsName': this.dataForm.materialsName,
             'doorPostName': this.dataForm.doorPostName,
             'poundRoom': this.dataForm.poundRoom,
-            'containerNum': this.dataForm.containerNum,
+            'ifconm': this.dataForm.ifconm,
             'tranType': this.dataForm.tranType,
             'emissionStand': this.dataForm.emissionStand,
             'fuelType': this.dataForm.fuelType,
+            'materialsPname': this.dataForm.materialsPname
 
           })
         }).then(({data}) => {
@@ -576,7 +600,7 @@
       // 删除
       deleteHandle (id) {
         var userIds = id ? [id] : this.dataListSelections.map(item => {
-          return item.userId
+          return item.id
         })
         this.$confirm(`确认删除该条数据吗?删除后数据不可恢复`, '提示', {
           confirmButtonText: '确定',
@@ -675,13 +699,13 @@
     margin-bottom: 10px;
   }
   .elScrollbar{
-    width: 77%;
+    width: 78%;
     overflow-x: auto;
     position: fixed;
     /*left: 20%;*/
     left: 250px;
     box-sizing: border-box;
-    bottom:2%;
+    bottom:5px;
     z-index: 999;
   }
   .el-table--scrollable-x .el-table__body-wrapper {
