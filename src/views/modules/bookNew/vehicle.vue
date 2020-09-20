@@ -193,7 +193,7 @@
         align="center"
         label="进厂照片">
         <template slot-scope="scope">
-          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" v-for="item in (scope.row.enterImg?scope.row.enterImg.split(','):[])" class="table-list-img" :src="item&&item.indexOf('http')!=-1?item:imgUrlfront+item" alt=" ">
+          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+'/door/'+item)" v-for="item in (scope.row.enterImg?scope.row.enterImg.split(','):[])" class="table-list-img" :src="item&&item.indexOf('http')!=-1?item:imgUrlfront+'/door/'+item" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
@@ -202,7 +202,7 @@
         align="center"
         label="出厂照片">
         <template slot-scope="scope">
-          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" v-for="item in (scope.row.outImg?scope.row.outImg.split(','):[])" class="table-list-img" :src="(item&&item.indexOf('http')!=-1?item:imgUrlfront+item)" alt=" ">
+          <img @click="preImg(item&&item.indexOf('http')!=-1?item:imgUrlfront+'/door/'+item)" v-for="item in (scope.row.outImg?scope.row.outImg.split(','):[])" class="table-list-img" :src="(item&&item.indexOf('http')!=-1?item:imgUrlfront+'/door/'+item)" alt=" ">
         </template>
       </el-table-column>
       <el-table-column
