@@ -56,7 +56,7 @@
         align="center"
         label="汽车运输量(吨)">
         <template slot-scope="scope">
-          <span>{{scope.row.carWeigh.toFixed(2)}}</span>
+          <span>{{scope.row.carWeigh&&scope.row.carWeigh.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -65,7 +65,7 @@
         align="center"
         label="火车运输量(吨)">
         <template slot-scope="scope">
-          <span>{{scope.row.trainWeigh.toFixed(2)}}</span>
+          <span>{{scope.row.trainWeigh&&scope.row.trainWeigh.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -74,7 +74,7 @@
         align="center"
         label="纯电动运输量(吨)">
         <template slot-scope="scope">
-          <span>{{scope.row.electWeigh.toFixed(2)}}</span>
+          <span>{{scope.row.electWeigh&&scope.row.electWeigh.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <el-table-column
@@ -83,7 +83,7 @@
         align="center"
         label="总运输量(吨)">
         <template slot-scope="scope">
-          <span>{{scope.row.sumWeigh.toFixed(2)}}</span>
+          <span>{{scope.row.sumWeigh&&scope.row.sumWeigh.toFixed(2)}}</span>
         </template>
       </el-table-column>
       <el-table-column

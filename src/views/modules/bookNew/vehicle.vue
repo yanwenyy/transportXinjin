@@ -47,8 +47,21 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="磅单类型:">
+        <el-select clearable  v-model="dataForm.meaType" placeholder="请选择">
+          <el-option
+            v-for="item in bdClass"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
+      </el-form-item>
       <el-form-item v-show="searchMore" label="车牌号:">
         <el-input v-model="dataForm.carNum" placeholder="车牌号" clearable></el-input>
+      </el-form-item>
+      <el-form-item v-show="searchMore" label="物料大类:">
+        <el-input v-model="dataForm.materialsPname" placeholder="物料大类" clearable></el-input>
       </el-form-item>
       <el-form-item v-show="searchMore" label="运输货物名称:">
         <el-input v-model="dataForm.materialsName" placeholder="运输货物名称" clearable></el-input>
@@ -318,6 +331,18 @@
         label="计量单号">
       </el-table-column>
       <el-table-column
+        v-if="checkedCities.indexOf('磅单类型')!=-1"
+        align="center"
+        label="磅单类型">
+        <template slot-scope="scope">
+          <div v-if="scope.row.measureType==null||scope.row.measureType==''">
+            <span v-if="scope.row.measureNum&&scope.row.measureNum.indexOf('RecIn')!=-1">采购</span>
+            <span v-if="scope.row.measureNum&&scope.row.measureNum.indexOf('SaleOut')!=-1">销售</span>
+          </div>
+          <span v-if="scope.row.measureType!=null&&scope.row.measureType!=''">{{scope.row.measureType==1?'采购 ':scope.row.measureType==2?'销售 ':''}}</span>
+        </template>
+      </el-table-column>
+      <el-table-column
         v-if="checkedCities.indexOf('毛重')!=-1"
         prop="crossWeigh"
         align="center"
@@ -485,6 +510,16 @@
             label:'否'
           }
         ],
+        bdClass:[
+          {
+            value:'RecIn',
+            label:'采购 '
+          },
+          {
+            value:'SaleOut',
+            label:'销售'
+          }
+        ],
         pickerOptionsStart: {
           disabledDate: time => {
             let endDateVal = this.dataForm.outFactoryTime;
@@ -551,6 +586,7 @@
             'tranType': this.dataForm.tranType,
             'emissionStand': this.dataForm.emissionStand,
             'fuelType': this.dataForm.fuelType,
+            'meaType': this.dataForm.meaType,
             'materialsPname': this.dataForm.materialsPname
 
           })
