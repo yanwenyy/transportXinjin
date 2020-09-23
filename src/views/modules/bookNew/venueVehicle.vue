@@ -13,7 +13,7 @@
         <el-input v-model="dataForm.evnCarNum" placeholder="环保登记编码或内部管理号牌" clearable></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList('search')">查询</el-button>
         <el-button v-if="isAuth('biz:factorycar:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-popover v-model="drVisibel"  v-if="isAuth('biz:factorycar:save')"
           placement="left"
@@ -179,8 +179,9 @@
     },
     methods: {
       // 获取数据列表
-      getDataList () {
-        this.dataListLoading = true
+      getDataList (type) {
+        this.dataListLoading = true;
+        type && type == "search"? this.pageIndex=1 : '';
         this.$http({
           url: this.$http.adornUrl('/jinding/factory/car/list'),
           method: 'get',

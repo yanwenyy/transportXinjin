@@ -60,9 +60,19 @@
       <el-form-item v-show="searchMore" label="车牌号:">
         <el-input v-model="dataForm.carNum" placeholder="车牌号" clearable></el-input>
       </el-form-item>
-      <el-form-item v-show="searchMore" label="物料大类:">
-        <el-input v-model="dataForm.materialsPname" placeholder="物料大类" clearable></el-input>
+      <el-form-item label="物料大类" v-show="searchMore">
+        <el-select clearable v-model="dataForm.materialsPname" placeholder="请选择">
+          <el-option
+            v-for="item in options"
+            :key="item.id"
+            :label="item.materialsName"
+            :value="item.id">
+          </el-option>
+        </el-select>
       </el-form-item>
+      <!--<el-form-item v-show="searchMore" label="物料大类:">-->
+        <!--<el-input v-model="dataForm.materialsPname" placeholder="物料大类" clearable></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item v-show="searchMore" label="运输货物名称:">
         <el-input v-model="dataForm.materialsName" placeholder="运输货物名称" clearable></el-input>
       </el-form-item>
@@ -85,7 +95,7 @@
 
       <span class="showMore" @click="searchMore=!searchMore">{{searchMore?'收起':'显示更多'}}</span>
       <el-form-item style="text-align: right;display: block">
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList('search')">查询</el-button>
         <el-button v-if="isAuth('biz:tran:save')" type="primary" @click="addOrUpdateHandle()">新增</el-button>
         <el-popover v-model="drVisibel" v-if="isAuth('biz:tran:save')"
         placement="left"
@@ -456,6 +466,7 @@
         tabelWidth:0,
         minwidth:0,
         ws:'',
+        options:[],
         ryzl:[
           {
             value: '柴油',
@@ -551,6 +562,13 @@
       this.getDataList();
       this.imgUrlfront=this.$http.adornUrl('/jinding/showImg/');
       this.token=this.$cookie.get('token');
+      this.$http({
+        url: this.$http.adornUrl('/biz/materials/select/list'),
+        method: 'get',
+        params: this.$http.adornParams()
+      }).then(({data}) => {
+        this.options = data && data.code === 10000 ? data.data : [];
+      })
     },
     mounted(){
       var num="_"+randomString();
@@ -568,8 +586,9 @@
     },
     methods: {
       // 获取数据列表
-      getDataList () {
+      getDataList (type) {
         this.dataListLoading = true;
+        type && type == "search"? this.pageIndex=1 : '';
         this.$http({
           url: this.$http.adornUrl('/jinding/tran/list'),
           method: 'get',

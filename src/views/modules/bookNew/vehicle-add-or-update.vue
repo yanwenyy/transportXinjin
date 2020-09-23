@@ -37,28 +37,28 @@
         </el-date-picker>
       </el-form-item>
       <el-form-item label="进厂照片">
-      <div class="inline-block box-img">
-        <div class="inline-block box-img" v-if="dataForm.enterImg&&dataForm.enterImg!=''">
-          <div  v-for="item in dataForm.enterImg" class="inline-block img-list-div">
-            <el-image class="look-img" title="点击查看大图"
-                      :src="item.indexOf('http')!=-1?item:imgUrlfront+item" :preview-src-list="srcList" >
-            </el-image>
-            <i class="el-icon-error box-img-del" @click="handleRemove3(item)"></i>
+        <div class="inline-block box-img">
+          <div class="inline-block box-img" v-if="dataForm.enterImg&&dataForm.enterImg!=''">
+            <div  v-for="item in dataForm.enterImg" class="inline-block img-list-div">
+              <el-image class="look-img" title="点击查看大图"
+                        :src="item.indexOf('http')!=-1?item:imgUrlfront+item" :preview-src-list="srcList" >
+              </el-image>
+              <i class="el-icon-error box-img-del" @click="handleRemove3(item)"></i>
+            </div>
+          </div>
+          <div class="inline-block box-img">
+            <el-upload
+              :show-file-list="false"
+              :headers="{'token':token}"
+              :action="this.$http.adornUrl('/jinding/file/upload')"
+              :on-success="handleChange3"
+              :on-error="handleChange3"
+              list-type="picture-card">
+              <i class="el-icon-plus"></i>
+            </el-upload>
           </div>
         </div>
-        <div class="inline-block box-img">
-          <el-upload
-            :show-file-list="false"
-            :headers="{'token':token}"
-            :action="this.$http.adornUrl('/jinding/file/upload')"
-            :on-success="handleChange3"
-            :on-error="handleChange3"
-            list-type="picture-card">
-            <i class="el-icon-plus"></i>
-          </el-upload>
-        </div>
-      </div>
-    </el-form-item>
+      </el-form-item>
       <el-form-item label="出厂照片">
         <div class="inline-block box-img" v-if="dataForm.outImg&&dataForm.outImg!=''">
           <div  v-for="item in dataForm.outImg" class="inline-block img-list-div">
@@ -113,7 +113,9 @@
           </el-option>
         </el-select>
       </el-form-item>
-
+      <!--<el-form-item label="车队名称">-->
+      <!--<el-input v-model="dataForm.owner" placeholder="车队名称"></el-input>-->
+      <!--</el-form-item>-->
       <el-form-item label="随车清单">
         <div class="inline-block box-img" v-if="dataForm.carCheckList&&dataForm.carCheckList!=''">
           <el-image class="look-img" title="点击查看大图"
@@ -170,11 +172,47 @@
       <el-form-item label="物料编码">
         <el-input v-model="dataForm.materialsNum" placeholder="物料编码"></el-input>
       </el-form-item>
+      <el-form-item label="物料大类">
+        <el-input v-model="dataForm.materialsPname" placeholder="物料大类"></el-input>
+      </el-form-item>
+      <el-form-item label="物料大类编码">
+        <el-input v-model="dataForm.materialsPnum" placeholder="物料大类编码"></el-input>
+      </el-form-item>
       <el-form-item label="物料名称">
         <el-input v-model="dataForm.materialsName" placeholder="物料名称"></el-input>
       </el-form-item>
+      <el-form-item label="磅房照片">
+        <div class="inline-block box-img" v-if="dataForm.poundImg&&dataForm.poundImg!=''">
+          <el-image class="look-img" title="点击查看大图"
+                    :src="dataForm.poundImg.indexOf('http')!=-1?dataForm.poundImg:imgUrlfront+dataForm.poundImg" :preview-src-list="srcList">
+          </el-image>
+          <i class="el-icon-error box-img-del" @click="dataForm.poundImg=''"></i>
+        </div>
+        <div class="inline-block box-img" v-if="dataForm.poundImg==''||!dataForm.poundImg">
+          <el-upload
+            :show-file-list="!dataForm.id && dataForm.poundImg==''"
+            :headers="{'token':token}"
+            :action="this.$http.adornUrl('/jinding/file/upload')"
+            :on-success="handleChange5"
+            :on-error="handleChange5"
+            list-type="picture-card"
+            :on-remove="handleRemove5">
+            <i class="el-icon-plus"></i>
+          </el-upload>
+        </div>
+      </el-form-item>
       <el-form-item label="计量单号">
         <el-input v-model="dataForm.measureNum" placeholder="计量单号"></el-input>
+      </el-form-item>
+      <el-form-item label="磅单类型:">
+        <el-select clearable  v-model="dataForm.measureType" placeholder="请选择">
+          <el-option
+            v-for="item in bdClass"
+            :key="item.value"
+            :label="item.label"
+            :value="item.value">
+          </el-option>
+        </el-select>
       </el-form-item>
       <el-form-item label="毛重">
         <el-input v-model="dataForm.crossWeigh" placeholder="毛重"></el-input>
@@ -253,13 +291,18 @@
           vehicleNum: '',
           engineNum: '',
           fuelType: '',
+          // owner:'',
           carCheckList: '',
           drivinglLicense: '',
           emissionStand: '',
           clientName: '',
           materialsNum: '',
+          materialsPname:'',
+          materialsPnum:'',
           materialsName: '',
+          poundImg:[],
           measureNum: '',
+          measureType:'',
           crossWeigh: '',
           tareWeigh: '',
           netWeigh: '',
@@ -295,6 +338,10 @@
           }, {
             value: '国六',
             label: '国六'
+          },
+          {
+            value: '纯电动',
+            label: '纯电动'
           }],
         ysfs:[
           {
@@ -304,6 +351,20 @@
           {
             value:"1",
             label: '公路'
+          },
+          {
+            value: '2',
+            label: '纯电动'
+          }
+        ],
+        bdClass:[
+          {
+            value:'1',
+            label:'采购 '
+          },
+          {
+            value:'2',
+            label:'销售'
           }
         ],
         value: '',
@@ -352,13 +413,18 @@
                 this.dataForm.vehicleNum = data.data.vehicleNum;
                 this.dataForm.engineNum = data.data.engineNum;
                 this.dataForm.fuelType = data.data.fuelType;
+                // this.dataForm.owner = data.data.owner;
                 this.dataForm.carCheckList = data.data.carCheckList;
                 this.dataForm.drivinglLicense = data.data.drivinglLicense;
                 this.dataForm.emissionStand = data.data.doorEmissionStand;
                 this.dataForm.clientName = data.data.clientName;
                 this.dataForm.materialsNum = data.data.materialsNum;
+                this.dataForm.materialsPname=data.data.materialsPname;
+                this.dataForm.materialsPnum=data.data.materialsPnum;
                 this.dataForm.materialsName = data.data.materialsName;
+                this.dataForm.poundImg = data.data.poundImg;
                 this.dataForm.measureNum = data.data.measureNum;
+                this.dataForm.measureType = data.data.measureType;
                 this.dataForm.crossWeigh = data.data.crossWeigh;
                 this.dataForm.tareWeigh = data.data.tareWeigh;
                 this.dataForm.netWeigh = data.data.netWeigh;
@@ -368,6 +434,7 @@
                 var list=this.dataForm.enterImg.concat(this.dataForm.outImg);
                 this.dataForm.carCheckList&&list.push(this.dataForm.carCheckList);
                 this.dataForm.drivinglLicense&&list.push(this.dataForm.drivinglLicense);
+                this.dataForm.poundImg&&list.push(this.dataForm.poundImg);
                 var i=0,len=list.length;
                 for(;i< len;i++){
                   var v=list[i];
@@ -391,13 +458,18 @@
             this.dataForm.vehicleNum ='';
             this.dataForm.engineNum = '';
             this.dataForm.fuelType = '';
+            // this.dataForm.owner = '';
             this.dataForm.carCheckList = '';
             this.dataForm.drivinglLicense = '';
             this.dataForm.emissionStand = '';
             this.dataForm.clientName = '';
             this.dataForm.materialsNum = '';
+            this.dataForm.materialsPname='';
+            this.dataForm.materialsPnum='';
             this.dataForm.materialsName = '';
+            this.dataForm.poundImg = '';
             this.dataForm.measureNum = '';
+            this.dataForm.measureType = '';
             this.dataForm.crossWeigh = '';
             this.dataForm.tareWeigh = '';
             this.dataForm.netWeigh = '';
@@ -410,6 +482,40 @@
       },
       // 表单提交
       dataFormSubmit () {
+        console.log(JSON.stringify({
+          'id': this.dataForm.id || undefined,
+          'enterTime': this.dataForm.enterTime,
+          'weighTime': this.dataForm.weighTime,
+          'checkOutTime':this.dataForm.checkOutTime,
+          'outFactoryTime': this.dataForm.outFactoryTime,
+          'enterImg': this.dataForm.enterImg.join(","),
+          'outImg': this.dataForm.outImg.join(","),
+          'doorPostName': this.dataForm.doorPostName,
+          'poundRoom': this.dataForm.poundRoom,
+          'carNum': this.dataForm.carNum,
+          'registTime': !this.dataForm.id ||this.dataForm.registTime&&this.dataForm.registTime.indexOf("00:00:00")==-1? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
+          'vehicleNum': this.dataForm.vehicleNum,
+          'engineNum': this.dataForm.engineNum,
+          'fuelType': this.dataForm.fuelType,
+          // 'owner': this.dataForm.owner,
+          'carCheckList': this.dataForm.carCheckList,
+          'drivinglLicense': this.dataForm.drivinglLicense,
+          'emissionStand': this.dataForm.emissionStand,
+          'clientName': this.dataForm.clientName,
+          'materialsNum': this.dataForm.materialsNum,
+          'materialsPname': this.dataForm.materialsPname,
+          'materialsPnum': this.dataForm.materialsPnum,
+          'materialsName': this.dataForm.materialsName,
+          'poundImg': this.dataForm.poundImg,
+          'measureNum': this.dataForm.measureNum,
+          'measureType': this.dataForm.measureType,
+          'crossWeigh': this.dataForm.crossWeigh,
+          'tareWeigh': this.dataForm.tareWeigh,
+          'netWeigh': this.dataForm.netWeigh,
+          'containerNum': this.dataForm.containerNum,
+          'tranType': this.dataForm.tranType,
+          'transportUnit': this.dataForm.transportUnit,
+        }))
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
@@ -426,17 +532,22 @@
                 'doorPostName': this.dataForm.doorPostName,
                 'poundRoom': this.dataForm.poundRoom,
                 'carNum': this.dataForm.carNum,
-                'registTime': !this.dataForm.id ||this.dataForm.registTime.indexOf("00:00:00")==-1? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
+                'registTime': !this.dataForm.id ||this.dataForm.registTime&&this.dataForm.registTime.indexOf("00:00:00")==-1? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
                 'vehicleNum': this.dataForm.vehicleNum,
                 'engineNum': this.dataForm.engineNum,
                 'fuelType': this.dataForm.fuelType,
+                // 'owner': this.dataForm.owner,
                 'carCheckList': this.dataForm.carCheckList,
                 'drivinglLicense': this.dataForm.drivinglLicense,
                 'emissionStand': this.dataForm.emissionStand,
                 'clientName': this.dataForm.clientName,
                 'materialsNum': this.dataForm.materialsNum,
+                'materialsPname': this.dataForm.materialsPname,
+                'materialsPnum': this.dataForm.materialsPnum,
                 'materialsName': this.dataForm.materialsName,
+                'poundImg': this.dataForm.poundImg,
                 'measureNum': this.dataForm.measureNum,
+                'measureType': this.dataForm.measureType,
                 'crossWeigh': this.dataForm.crossWeigh,
                 'tareWeigh': this.dataForm.tareWeigh,
                 'netWeigh': this.dataForm.netWeigh,
@@ -540,6 +651,24 @@
             duration: 1500,
             onClose: () => {
               this.dataForm.outImg.push(response.data);
+
+            }
+          })
+        } else {
+          this.$message.error(response.msg)
+        }
+      },
+      handleRemove5(file) {
+        this.dataForm.poundImg='';
+      },
+      handleChange5(response, file, fileList){
+        if (response && response.code === 10000) {
+          this.$message({
+            message: '上传成功',
+            type: 'success',
+            duration: 1500,
+            onClose: () => {
+              this.dataForm.poundImg=response.data;
 
             }
           })

@@ -41,7 +41,7 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button @click="getDataList()">查询</el-button>
+        <el-button @click="getDataList('search')">查询</el-button>
         <el-button type="warning" @click="down">导出</el-button>
         <el-button v-if="isAuth('biz:outcar:delete')" type="danger" @click="deleteHandle()" :disabled="dataListSelections.length <= 0">批量删除</el-button>
       </el-form-item>
@@ -207,8 +207,9 @@
     },
     methods: {
       // 获取数据列表
-      getDataList () {
-        this.dataListLoading = true
+      getDataList (type) {
+        this.dataListLoading = true;
+        type && type == "search"? this.pageIndex=1 : '';
         this.$http({
           url: this.$http.adornUrl('/jinding/outcar/list'),
           method: 'get',
