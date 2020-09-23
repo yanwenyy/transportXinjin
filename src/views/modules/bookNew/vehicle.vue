@@ -523,11 +523,11 @@
         ],
         bdClass:[
           {
-            value:'RecIn',
+            value:'1',
             label:'采购 '
           },
           {
-            value:'SaleOut',
+            value:'2',
             label:'销售'
           }
         ],

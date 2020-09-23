@@ -482,40 +482,6 @@
       },
       // 表单提交
       dataFormSubmit () {
-        console.log(JSON.stringify({
-          'id': this.dataForm.id || undefined,
-          'enterTime': this.dataForm.enterTime,
-          'weighTime': this.dataForm.weighTime,
-          'checkOutTime':this.dataForm.checkOutTime,
-          'outFactoryTime': this.dataForm.outFactoryTime,
-          'enterImg': this.dataForm.enterImg.join(","),
-          'outImg': this.dataForm.outImg.join(","),
-          'doorPostName': this.dataForm.doorPostName,
-          'poundRoom': this.dataForm.poundRoom,
-          'carNum': this.dataForm.carNum,
-          'registTime': !this.dataForm.id ||this.dataForm.registTime&&this.dataForm.registTime.indexOf("00:00:00")==-1? this.dataForm.registTime+" 00:00:00":this.dataForm.registTime,
-          'vehicleNum': this.dataForm.vehicleNum,
-          'engineNum': this.dataForm.engineNum,
-          'fuelType': this.dataForm.fuelType,
-          // 'owner': this.dataForm.owner,
-          'carCheckList': this.dataForm.carCheckList,
-          'drivinglLicense': this.dataForm.drivinglLicense,
-          'emissionStand': this.dataForm.emissionStand,
-          'clientName': this.dataForm.clientName,
-          'materialsNum': this.dataForm.materialsNum,
-          'materialsPname': this.dataForm.materialsPname,
-          'materialsPnum': this.dataForm.materialsPnum,
-          'materialsName': this.dataForm.materialsName,
-          'poundImg': this.dataForm.poundImg,
-          'measureNum': this.dataForm.measureNum,
-          'measureType': this.dataForm.measureType,
-          'crossWeigh': this.dataForm.crossWeigh,
-          'tareWeigh': this.dataForm.tareWeigh,
-          'netWeigh': this.dataForm.netWeigh,
-          'containerNum': this.dataForm.containerNum,
-          'tranType': this.dataForm.tranType,
-          'transportUnit': this.dataForm.transportUnit,
-        }))
         this.$refs['dataForm'].validate((valid) => {
           if (valid) {
             this.$http({
